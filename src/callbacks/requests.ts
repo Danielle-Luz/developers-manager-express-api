@@ -25,14 +25,22 @@ export namespace requests {
   };
 
   export const getDevelopers = async (req: Request, res: Response) => {
-    const developerId = parseInt(req.params.id);
+    let developerId = parseInt(req.params.id);
+    developerId = isNaN(developerId) ? -1 : developerId;
+    const hasId = developerId || developerId === 0;
 
     try {
-      const allDevelopersList: iDeveloperJoinDeveloperInfo[] =
-        developerId || developerId === 0
-          ? await database.getDevelopers(developerId)
-          : await database.getDevelopers();
+      const allDevelopersList: iDeveloperJoinDeveloperInfo[] = hasId
+        ? await database.getDevelopers(developerId)
+        : await database.getDevelopers();
 
+      if (hasId && allDevelopersList.length === 0) {
+        const errorMessage: iMessage = {
+          message: "Developer not found.",
+        };
+
+        return res.status(404).send(errorMessage);
+      }
       return res.status(200).send(allDevelopersList);
     } catch (error) {
       const errorMessage: iMessage = {
