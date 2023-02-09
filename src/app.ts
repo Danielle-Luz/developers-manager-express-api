@@ -1,4 +1,5 @@
 import { middlewares } from "../src/callbacks/middlewares";
+import { database } from "./database";
 
 const express = require("express");
 
@@ -8,6 +9,7 @@ api.use(express.json());
 
 api.post(
   "/developers",
+  database.createDeveloper,
   middlewares.checkDeveloperKeys,
   middlewares.checkDeveloperTypes,
   middlewares.checkNotUniqueEmail
