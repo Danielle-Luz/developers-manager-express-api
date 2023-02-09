@@ -20,7 +20,8 @@ api.post(
   "/developers/:id/infos",
   middlewares.checkDeveloperInfoKeys,
   middlewares.storeDeveloperInfoOnlyWithRightKeys,
-  middlewares.checkDeveloperInfoTypes,
+  middlewares.checkPreferredOs,
+  middlewares.checkDateFormat,
   middlewares.checkIfDeveloperExists,
   requests.createDeveloperInfos
 );

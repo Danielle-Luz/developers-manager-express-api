@@ -1,9 +1,8 @@
 import {
   iDeveloper,
   iDeveloperInfo,
-  iDeveloperJoinDeveloperInfo,
   iMessage,
-  os,
+  os
 } from "./../interfaces";
 import { NextFunction, Request, Response } from "express";
 import { database } from "../database";
@@ -15,9 +14,8 @@ export namespace middlewares {
   };
 
   const developerInfoModel: iDeveloperInfo = {
-    developerSince: new Date("2023/01/10"),
-    preferredOs: os.Linux,
-    developerId: 1,
+    developer_since: new Date("2023/01/10"),
+    preferred_os: "",
   };
 
   const developerModelKeys = Object.keys(developerModel);
@@ -169,22 +167,69 @@ export namespace middlewares {
     );
   };
 
+  export const checkDateFormat = (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    const dateRegex = /^\d{4}\/\d{2}\/\d{2}$/;
+    const hasRightDateFormat = dateRegex.test(req.body.developer_since);
+
+    if (!hasRightDateFormat) {
+      const errorMessage: iMessage = {
+        message: "The date should have the format: 0000/00/00",
+      };
+
+      return res.status(400).send(errorMessage);
+    }
+
+    req.body.developer_since = new Date(req.body.developer_since);
+
+    next();
+  };
+
+  export const checkPreferredOs = (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    const preferredOs = req.body.preferred_os + "";
+
+    const formattedOs =
+      (preferredOs[0] || "").toUpperCase() + preferredOs.substring(1).toLowerCase();
+
+    const isAValidOs = os.includes(formattedOs);
+
+    if (!isAValidOs) {
+      const errorMessage: iMessage = {
+        message: `Preferred OS should have one of this values: ${os.join(
+          ", "
+        )}`,
+      };
+
+      return res.status(400).send(errorMessage);
+    }
+
+    req.body.preferred_os = formattedOs;
+
+    next();
+  };
+
   export const storeDeveloperInfoOnlyWithRightKeys = (
     req: Request,
     _: Response,
     next: NextFunction
   ) => {
     const developerInfoOnlyWithRightKeys: iDeveloperInfo = {
-      developerSince: new Date("2023/01/10"),
-      preferredOs: os.Linux,
-      developerId: 1,
+      developer_since: new Date("2023/01/10"),
+      preferred_os: "",
     };
 
     storeDataOnlyWithRightKeys(
       req,
       next,
       developerInfoOnlyWithRightKeys,
-      developerModelKeys
+      developerInfoModelKeys
     );
   };
 

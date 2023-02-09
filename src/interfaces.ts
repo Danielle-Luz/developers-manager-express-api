@@ -1,32 +1,28 @@
-export enum os {
-  "Windows",
-  "Linux",
-  "MacOS"
-}
+export const os = ["Windows", "Linux", "MacOS"];
 
 export interface iDeveloper {
   id?: number;
   name: string;
   email: string;
-  developerInfoId?: number | null;
+  developer_info_id?: number | null;
   [key: string]: string | number | null;
 }
 
 export interface iDeveloperInfo {
   id?: number;
-	developerSince: Date;
-	preferredOs: os;
-	developerId: number;
+  developer_since: Date;
+  preferred_os: "";
+  developer_id?: number;
   [key: string]: string | number | Date | null;
 }
 
 export interface iDeveloperJoinDeveloperInfo {
-  developerID: number,
-  developerName: string,
-  developerEmail: string,
-  developerInfoID: number | null,
-  developerInfoDeveloperSince: string | null,
-  developerInfoPreferredOS: os | null
+  developer_id: number;
+  developer_name: string;
+  developer_email: string;
+  developer_info_id: number | null;
+  developer_info_developer_since: string | null;
+  developer_info_preferred_os: "" | null;
 }
 
 export interface iMessage {
