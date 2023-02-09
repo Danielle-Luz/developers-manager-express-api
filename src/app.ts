@@ -8,9 +8,6 @@ const api = express();
 
 api.use(express.json());
 
-api.use("/:id", middlewares.parseId);
-api.use("developers/:id", middlewares.checkIfDeveloperExists);
-
 api.post(
   "/developers",
   middlewares.checkDeveloperKeys,
@@ -21,7 +18,12 @@ api.post(
 );
 
 api.get("/developers", requests.getDevelopers);
-api.get("/developers/:id", requests.getDevelopers);
+api.get(
+  "/developers/:id",
+  middlewares.parseId,
+  middlewares.checkIfDeveloperExists,
+  requests.getDevelopers
+);
 
 api.listen(3000, async () => {
   await database.connection.connect();
