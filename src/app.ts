@@ -1,4 +1,5 @@
 import { middlewares } from "../src/callbacks/middlewares";
+import { requests } from "../src/callbacks/requests";
 import { database } from "./database";
 
 const express = require("express");
@@ -9,12 +10,14 @@ api.use(express.json());
 
 api.post(
   "/developers",
-  database.createDeveloper,
   middlewares.checkDeveloperKeys,
   middlewares.checkDeveloperTypes,
-  middlewares.checkNotUniqueEmail
+  middlewares.checkNotUniqueEmail,
+  requests.createDeveloper
 );
 
-api.listen(3000, () => {
+api.listen(3000, async () => {
+  await database.connection.connect();
+
   console.log("The API is working :))");
 });

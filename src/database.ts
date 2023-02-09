@@ -1,9 +1,10 @@
 import { format } from "node-pg-format";
 import { Client, QueryResult } from "pg";
 import { iCount, iDeveloper } from "./interfaces";
+import "dotenv/config";
 
 export namespace database {
-  const connection = new Client({
+  export const connection = new Client({
     user: process.env.USER,
     password: process.env.PASSWORD,
     host: process.env.HOST,

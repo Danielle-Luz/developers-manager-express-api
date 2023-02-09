@@ -18,7 +18,6 @@ export namespace middlewares {
     const { body: newDeveloper } = req;
     const newDeveloperKeys = Object.keys(newDeveloper);
     const missingKeys: string[] = [];
-
     const hasAllKeys = developerModelKeys.every((key) => {
       const hasKey = newDeveloperKeys.includes(key);
 
@@ -82,7 +81,7 @@ export namespace middlewares {
       newDeveloperEmail
     );
 
-    if (developersCount > 1) {
+    if (developersCount > 0) {
       const errorMessage: iMessage = { message: "Email already exists." };
 
       return res.status(409).send(errorMessage);
