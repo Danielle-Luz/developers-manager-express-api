@@ -1,5 +1,6 @@
 import { iDeveloper, iMessage } from "./../interfaces";
 import { NextFunction, Request, Response } from "express";
+import { database } from "../database";
 
 export namespace middlewares {
   const developerModel: iDeveloper = {
@@ -65,6 +66,27 @@ export namespace middlewares {
     });
 
     if (!hasAllRightTypes) return res.status(400).send({ errors: wrongTypes });
+
+    return next();
+  };
+
+  export const checkNotUniqueEmail = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    const { body: newDeveloper } = req;
+    const { email: newDeveloperEmail } = newDeveloper;
+
+    const { count: developersCount } = await database.getDevelopersCountByEmail(
+      newDeveloperEmail
+    );
+
+    if (developersCount > 1) {
+      const errorMessage: iMessage = { message: "Email already exists." };
+
+      return res.status(409).send(errorMessage);
+    }
 
     return next();
   };

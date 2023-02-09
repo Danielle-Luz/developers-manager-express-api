@@ -9,3 +9,7 @@ export interface iDeveloper {
 export interface iMessage {
   message: string;
 }
+
+export interface iCount {
+  count: number;
+}

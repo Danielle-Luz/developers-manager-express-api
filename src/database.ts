@@ -1,5 +1,6 @@
+import { format } from "node-pg-format";
 import { Client, QueryResult } from "pg";
-import { iDeveloper } from "./interfaces";
+import { iCount, iDeveloper } from "./interfaces";
 
 export namespace database {
   const connection = new Client({
@@ -7,12 +8,16 @@ export namespace database {
     password: process.env.PASSWORD,
     host: process.env.HOST,
     database: process.env.DATABASE,
-    port: parseInt(process.env.PORT || "5432")
+    port: parseInt(process.env.PORT || "5432"),
   });
 
-  export const getDatabaseByEmail = (email: string) => {
-    const queryString = "SELECT * FROM developers WHERE email = %L";
+  export const getDevelopersCountByEmail = async (email: string) => {
+    const queryString = "SELECT COUNT(*) FROM developers WHERE email = %L";
 
-    //const queryResult: QueryResult<iDeveloper> = 
+    const queryResult: QueryResult<iCount> = await connection.query(
+      format(queryString, email)
+    );
+
+    return queryResult.rows[0];
   };
 }
