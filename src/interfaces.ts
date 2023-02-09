@@ -1,4 +1,4 @@
-enum os {
+export enum os {
   "Windows",
   "Linux",
   "MacOS"
@@ -21,12 +21,12 @@ export interface iDeveloperInfo {
 }
 
 export interface iDeveloperJoinDeveloperInfo {
-  "developerID": number,
-  "developerName": string,
-  "developerEmail": string,
-  "developerInfoID": number | null,
-  "developerInfoDeveloperSince": string | null,
-  "developerInfoPreferredOS": os | null
+  developerID: number,
+  developerName: string,
+  developerEmail: string,
+  developerInfoID: number | null,
+  developerInfoDeveloperSince: string | null,
+  developerInfoPreferredOS: os | null
 }
 
 export interface iMessage {

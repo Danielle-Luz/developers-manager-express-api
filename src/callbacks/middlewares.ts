@@ -1,4 +1,10 @@
-import { iDeveloper, iMessage } from "./../interfaces";
+import {
+  iDeveloper,
+  iDeveloperInfo,
+  iDeveloperJoinDeveloperInfo,
+  iMessage,
+  os,
+} from "./../interfaces";
 import { NextFunction, Request, Response } from "express";
 import { database } from "../database";
 
@@ -8,20 +14,29 @@ export namespace middlewares {
     email: "",
   };
 
-  const developerModelKeys = Object.keys(developerModel);
+  const developerInfoModel: iDeveloperInfo = {
+    developerSince: new Date("2023/01/10"),
+    preferredOs: os.Linux,
+    developerId: 1,
+  };
 
-  export const checkDeveloperKeys = (
+  const developerModelKeys = Object.keys(developerModel);
+  const developerInfoModelKeys = Object.keys(developerInfoModel);
+
+  export const checkKeys = (
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
+    modelKeys: string[]
   ) => {
-    const { body: newDeveloper } = req;
-    const newDeveloperKeys = Object.keys(newDeveloper);
+    const { body: newData } = req;
+
+    const newDataKeys = Object.keys(newData);
 
     const missingKeys: string[] = [];
 
-    developerModelKeys.forEach((key) => {
-      const hasKey = newDeveloperKeys.includes(key);
+    modelKeys.forEach((key) => {
+      const hasKey = newDataKeys.includes(key);
 
       if (!hasKey) {
         missingKeys.push(key);
@@ -36,6 +51,22 @@ export namespace middlewares {
     }
 
     return next();
+  };
+
+  export const checkDeveloperKeys = (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    checkKeys(req, res, next, developerModelKeys);
+  };
+
+  export const checkDeveloperInfoKeys = (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    checkKeys(req, res, next, developerInfoModelKeys);
   };
 
   export const checkDeveloperTypes = (

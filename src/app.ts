@@ -9,6 +9,7 @@ const api = express();
 api.use(express.json());
 
 api.use("/:id", middlewares.parseId);
+api.use("developers/:id", middlewares.checkIfDeveloperExists);
 
 api.post(
   "/developers",
