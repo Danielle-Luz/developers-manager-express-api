@@ -20,4 +20,21 @@ export namespace database {
 
     return queryResult.rows[0];
   };
+
+  export const createDeveloper = async (newDeveloperData: iDeveloper) => {
+    const newDeveloperDataKeys = Object.keys(newDeveloperData);
+    const newDeveloperDataValues = Object.values(newDeveloperData);
+
+    const queryString = `
+    INSERT INTO developers (%I)
+    VALUES (%L)
+    RETURNING *
+    `;
+
+    const queryResult: QueryResult<iDeveloper> = await connection.query(
+      format(queryString, newDeveloperDataKeys, newDeveloperDataValues)
+    );
+
+    return queryResult.rows[0];
+  };
 }
