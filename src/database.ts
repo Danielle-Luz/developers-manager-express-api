@@ -57,7 +57,8 @@ export namespace database {
     const queryString = `
     UPDATE %I
     SET %I = %L
-    WHERE id = %L;
+    WHERE id = %L
+    RETURNING *
     `;
 
     await connection.query(
@@ -70,7 +71,7 @@ export namespace database {
       )
     );
 
-    await connection.query(
+    const updatedDeveloperInfo = await connection.query(
       format(
         queryString,
         "developer_infos",
@@ -80,7 +81,7 @@ export namespace database {
       )
     );
 
-    return createdDeveloperInfo;
+    return updatedDeveloperInfo.rows[0];
   };
 
   export const getDevelopers = async (id?: number) => {
