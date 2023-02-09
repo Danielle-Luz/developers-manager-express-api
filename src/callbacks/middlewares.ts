@@ -105,4 +105,33 @@ export namespace middlewares {
 
     next();
   };
+
+  export const parseId = (req: Request, _: Response, next: NextFunction) => {
+    const developerId = parseInt(req.params.id);
+    req.parsedId = isNaN(developerId) ? -1 : developerId;
+
+    next();
+  };
+
+  export const checkIfDeveloperExists = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    const developerId = req.parsedId;
+
+    const foundDeveloper = await database.getDevelopers(developerId);
+
+    if (foundDeveloper.length === 0) {
+      const errorMessage: iMessage = {
+        message: "Developer not found.",
+      };
+
+      return res.status(404).send(errorMessage);
+    }
+
+    req.foundDeveloper = foundDeveloper[0];
+
+    next();
+  };
 }

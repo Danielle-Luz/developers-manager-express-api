@@ -8,6 +8,8 @@ const api = express();
 
 api.use(express.json());
 
+api.use("/:id", middlewares.parseId);
+
 api.post(
   "/developers",
   middlewares.checkDeveloperKeys,
