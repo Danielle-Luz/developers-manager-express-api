@@ -38,4 +38,21 @@ export namespace database {
 
     return queryResult.rows[0];
   };
+
+  export const getAllDevelopers = async () => {
+    const queryString = `
+    SELECT 
+    di.id AS developerInfoID, 
+    developer_since AS developerInfoDeveloperSince,
+    preferred_os AS developerInfoPreferredOS,
+    d.id AS developerID,
+    "name" AS developerName,
+    email AS developerEmail
+    FROM developers d
+    JOIN developer_infos di
+    ON d.id = di.id;
+    `;
+
+    //const queryResult;
+  };
 }
