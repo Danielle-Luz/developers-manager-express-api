@@ -137,21 +137,55 @@ export namespace middlewares {
     return next();
   };
 
+  export const storeDataOnlyWithRightKeys = (
+    req: Request,
+    next: NextFunction,
+    dataWithRightKeys: iDeveloper | iDeveloperInfo,
+    rightKeys: string[]
+  ) => {
+    const { body: newData } = req;
+
+    rightKeys.forEach((key) => {
+      dataWithRightKeys[key] = newData[key];
+    });
+
+    req.body = dataWithRightKeys;
+
+    next();
+  };
+
   export const storeDeveloperOnlyWithRightKeys = (
     req: Request,
     _: Response,
     next: NextFunction
   ) => {
-    const { body: newDeveloper } = req;
     const developerOnlyWithRightKeys: iDeveloper = { name: "", email: "" };
 
-    developerModelKeys.forEach((key) => {
-      developerOnlyWithRightKeys[key] = newDeveloper[key];
-    });
+    storeDataOnlyWithRightKeys(
+      req,
+      next,
+      developerOnlyWithRightKeys,
+      developerModelKeys
+    );
+  };
 
-    req.body = developerOnlyWithRightKeys;
+  export const storeDeveloperInfoOnlyWithRightKeys = (
+    req: Request,
+    _: Response,
+    next: NextFunction
+  ) => {
+    const developerInfoOnlyWithRightKeys: iDeveloperInfo = {
+      developerSince: new Date("2023/01/10"),
+      preferredOs: os.Linux,
+      developerId: 1,
+    };
 
-    next();
+    storeDataOnlyWithRightKeys(
+      req,
+      next,
+      developerInfoOnlyWithRightKeys,
+      developerModelKeys
+    );
   };
 
   export const parseId = (req: Request, _: Response, next: NextFunction) => {
