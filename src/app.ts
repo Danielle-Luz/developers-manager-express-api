@@ -16,6 +16,14 @@ api.post(
   middlewares.checkNotUniqueEmail,
   requests.createDeveloper
 );
+api.post(
+  "/developers/:id/infos",
+  middlewares.checkDeveloperInfoKeys,
+  middlewares.storeDeveloperInfoOnlyWithRightKeys,
+  middlewares.checkDeveloperInfoTypes,
+  middlewares.checkIfDeveloperExists,
+  requests.createDeveloperInfos
+);
 
 api.get("/developers", requests.getDevelopers);
 api.get(

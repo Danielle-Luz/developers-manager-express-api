@@ -23,7 +23,7 @@ export namespace middlewares {
   const developerModelKeys = Object.keys(developerModel);
   const developerInfoModelKeys = Object.keys(developerInfoModel);
 
-  export const checkKeys = (
+  const checkKeys = (
     req: Request,
     res: Response,
     next: NextFunction,
@@ -69,7 +69,7 @@ export namespace middlewares {
     checkKeys(req, res, next, developerInfoModelKeys);
   };
 
-  export const checkTypes = (
+  const checkTypes = (
     req: Request,
     res: Response,
     next: NextFunction,
@@ -137,7 +137,7 @@ export namespace middlewares {
     return next();
   };
 
-  export const storeDataOnlyWithRightKeys = (
+  const storeDataOnlyWithRightKeys = (
     req: Request,
     next: NextFunction,
     dataWithRightKeys: iDeveloper | iDeveloperInfo,
