@@ -37,4 +37,35 @@ export namespace middlewares {
 
     return next();
   };
+
+  export const checkDeveloperTypes = (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    const { body: newDeveloper } = req;
+
+    const wrongTypes: iMessage[] = [];
+
+    const hasAllRightTypes = developerModelKeys.every((key) => {
+      const hasRightType =
+        newDeveloper[key].constructor === developerModel[key].constructor;
+      const constructorName =
+        developerModel[key].constructor.name.toLowerCase();
+
+      if (!hasRightType) {
+        const errorMessage: iMessage = {
+          message: `Property ${key} shoud have ${constructorName} type`,
+        };
+
+        wrongTypes.push(errorMessage);
+      }
+
+      return hasRightType;
+    });
+
+    if (!hasAllRightTypes) return res.status(400).send({ errors: wrongTypes });
+
+    return next();
+  };
 }
