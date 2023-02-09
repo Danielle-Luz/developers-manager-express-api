@@ -24,10 +24,14 @@ export namespace requests {
     }
   };
 
-  export const getAllDevelopers = async (_: Request, res: Response) => {
+  export const getDevelopers = async (req: Request, res: Response) => {
+    const developerId = parseInt(req.params.id);
+
     try {
       const allDevelopersList: iDeveloperJoinDeveloperInfo[] =
-        await database.getAllDevelopers();
+        developerId || developerId === 0
+          ? await database.getDevelopers(developerId)
+          : await database.getDevelopers();
 
       return res.status(200).send(allDevelopersList);
     } catch (error) {

@@ -39,8 +39,8 @@ export namespace database {
     return queryResult.rows[0];
   };
 
-  export const getAllDevelopers = async () => {
-    const queryString = `
+  export const getDevelopers = async (id?: number) => {
+    let queryString = `
     SELECT 
     di.id AS developerInfoID, 
     developer_since AS developerInfoDeveloperSince,
@@ -50,10 +50,17 @@ export namespace database {
     email AS developerEmail
     FROM developers d
     LEFT JOIN developer_infos di
-    ON d.id = di.id;
+    ON d.id = di.id
     `;
 
-    const queryResult: QueryResult<iDeveloperJoinDeveloperInfo> = await connection.query(queryString);
+    if (id || id === 0) {
+      queryString += "WHERE d.id = %L";
+
+      queryString = format(queryString, id);
+    }
+
+    const queryResult: QueryResult<iDeveloperJoinDeveloperInfo> =
+      await connection.query(queryString);
 
     return queryResult.rows;
   };
