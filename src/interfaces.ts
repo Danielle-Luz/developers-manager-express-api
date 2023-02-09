@@ -4,3 +4,7 @@ export interface iDeveloper {
   email: string;
   developerInfoId?: number | null;
 }
+
+export interface iMessage {
+  message: string;
+}
