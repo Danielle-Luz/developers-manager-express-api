@@ -22,6 +22,7 @@ api.post(
   middlewares.storeDeveloperInfoOnlyWithRightKeys,
   middlewares.checkPreferredOs,
   middlewares.checkDateFormat,
+  middlewares.parseId,
   middlewares.checkIfDeveloperExists,
   requests.createDeveloperInfos
 );
