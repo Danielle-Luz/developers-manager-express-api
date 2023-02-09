@@ -47,7 +47,7 @@ export namespace middlewares {
 
     const wrongTypes: iMessage[] = [];
 
-    const hasAllRightTypes = developerModelKeys.every((key) => {
+    developerModelKeys.forEach((key) => {
       const hasRightType =
         newDeveloper[key].constructor === developerModel[key]?.constructor;
       const constructorName =
@@ -60,11 +60,10 @@ export namespace middlewares {
 
         wrongTypes.push(errorMessage);
       }
-
-      return hasRightType;
     });
 
-    if (!hasAllRightTypes) return res.status(400).send({ errors: wrongTypes });
+    if (wrongTypes.length > 0)
+      return res.status(400).send({ errors: wrongTypes });
 
     return next();
   };
