@@ -69,20 +69,21 @@ export namespace middlewares {
     checkKeys(req, res, next, developerInfoModelKeys);
   };
 
-  export const checkDeveloperTypes = (
+  export const checkTypes = (
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
+    model: iDeveloperInfo | iDeveloper
   ) => {
-    const { body: newDeveloper } = req;
+    const { body: newData } = req;
+
+    const modelKeys = Object.keys(model);
 
     const wrongTypes: iMessage[] = [];
 
-    developerModelKeys.forEach((key) => {
-      const hasRightType =
-        newDeveloper[key].constructor === developerModel[key]?.constructor;
-      const constructorName =
-        developerModel[key]?.constructor.name.toLowerCase();
+    modelKeys.forEach((key) => {
+      const hasRightType = newData[key].constructor === model[key]?.constructor;
+      const constructorName = model[key]?.constructor.name.toLowerCase();
 
       if (!hasRightType) {
         const errorMessage: iMessage = {
@@ -97,6 +98,22 @@ export namespace middlewares {
       return res.status(400).send({ errors: wrongTypes });
 
     return next();
+  };
+
+  export const checkDeveloperTypes = (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    checkTypes(req, res, next, developerModel);
+  };
+
+  export const checkDeveloperInfoTypes = (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    checkTypes(req, res, next, developerInfoModel);
   };
 
   export const checkNotUniqueEmail = async (
