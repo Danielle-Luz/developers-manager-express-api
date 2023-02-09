@@ -3,6 +3,7 @@ export interface iDeveloper {
   name: string;
   email: string;
   developerInfoId?: number | null;
+  [key: string]: string | number | null;
 }
 
 export interface iMessage {

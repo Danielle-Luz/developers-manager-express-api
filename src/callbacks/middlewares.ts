@@ -49,9 +49,9 @@ export namespace middlewares {
 
     const hasAllRightTypes = developerModelKeys.every((key) => {
       const hasRightType =
-        newDeveloper[key].constructor === developerModel[key].constructor;
+        newDeveloper[key].constructor === developerModel[key]?.constructor;
       const constructorName =
-        developerModel[key].constructor.name.toLowerCase();
+        developerModel[key]?.constructor.name.toLowerCase();
 
       if (!hasRightType) {
         const errorMessage: iMessage = {
