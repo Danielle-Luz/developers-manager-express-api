@@ -4,18 +4,46 @@ import { database } from "../database";
 import { iMessage } from "../interfaces";
 
 export namespace requests {
-  export const createDeveloper = async (req: Request, res: Response) => {
-    const { body: newDeveloper } = req;
+  const createRegister = async (req: Request, res: Response, table: string) => {
+    const { body: newRegister } = req;
 
     try {
-      const createdDeveloper = await database.createDeveloper(newDeveloper);
+      const createdRegister = await database.createRegister(newRegister, table);
 
-      return res.status(201).send(createdDeveloper);
+      return res.status(201).send(createdRegister);
     } catch (error) {
       const errorObject = error as Error;
 
       const errorMessage: iMessage = {
         message: "Failed to insert the data in the database",
+      };
+
+      console.error(errorObject.stack);
+
+      return res.status(500).send(errorMessage);
+    }
+  };
+
+  export const createDeveloper = async (req: Request, res: Response) => {
+    await createRegister(req, res, "developers");
+  };
+
+  export const createDeveloperInfos = async (req: Request, res: Response) => {
+    const { body: newDeveloperInfo } = req;
+    const developerId = req.parsedId;
+
+    try {
+      const createdDeveloperInfo = await database.createDeveloperInfo(
+        developerId,
+        newDeveloperInfo
+      );
+
+      return res.status(201).send(createdDeveloperInfo);
+    } catch (error) {
+      const errorObject = error as Error;
+
+      const errorMessage: iMessage = {
+        message: "Failed to insert the developer info in the database",
       };
 
       console.error(errorObject.stack);

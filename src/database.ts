@@ -1,6 +1,11 @@
 import { format } from "node-pg-format";
 import { Client, QueryResult } from "pg";
-import { iCount, iDeveloper, iDeveloperJoinDeveloperInfo } from "./interfaces";
+import {
+  iCount,
+  iDeveloper,
+  iDeveloperInfo,
+  iDeveloperJoinDeveloperInfo,
+} from "./interfaces";
 import "dotenv/config";
 
 export namespace database {
@@ -22,21 +27,60 @@ export namespace database {
     return queryResult.rows[0];
   };
 
-  export const createDeveloper = async (newDeveloperData: iDeveloper) => {
-    const newDeveloperDataKeys = Object.keys(newDeveloperData);
-    const newDeveloperDataValues = Object.values(newDeveloperData);
+  export const createRegister = async (
+    newRegister: iDeveloper | iDeveloperInfo,
+    table: string
+  ) => {
+    const newRegisterKeys = Object.keys(newRegister);
+    const newRegisterValues = Object.values(newRegister);
 
     const queryString = `
-    INSERT INTO developers (%I)
+    INSERT INTO %I (%I)
     VALUES (%L)
     RETURNING *
     `;
 
     const queryResult: QueryResult<iDeveloper> = await connection.query(
-      format(queryString, newDeveloperDataKeys, newDeveloperDataValues)
+      format(queryString, table, newRegisterKeys, newRegisterValues)
     );
 
     return queryResult.rows[0];
+  };
+
+  export const createDeveloperInfo = async (
+    developerId: number,
+    newDeveloperInfo: iDeveloperInfo,
+  ) => {
+    const createdDeveloperInfo = await createRegister(newDeveloperInfo, "developer_infos");
+    const developerInfoId = createdDeveloperInfo.id;
+
+    const queryString = `
+    UPDATE %I
+    SET %I = %L
+    WHERE id = %L;
+    `;
+
+    await connection.query(
+      format(
+        queryString,
+        "developers",
+        "developer_info_id",
+        developerInfoId,
+        developerId
+      )
+    );
+
+    await connection.query(
+      format(
+        queryString,
+        "developer_infos",
+        "developer_id",
+        developerId,
+        developerInfoId
+      )
+    );
+
+    return createdDeveloperInfo;
   };
 
   export const getDevelopers = async (id?: number) => {
