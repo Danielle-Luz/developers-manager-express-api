@@ -17,6 +17,8 @@ api.post(
   requests.createDeveloper
 );
 
+api.get("/developers", requests.getAllDevelopers);
+
 api.listen(3000, async () => {
   await database.connection.connect();
 

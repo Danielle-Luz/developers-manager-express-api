@@ -1,3 +1,4 @@
+import { iDeveloperJoinDeveloperInfo } from "./../interfaces";
 import { Request, Response } from "express";
 import { database } from "../database";
 import { iMessage } from "../interfaces";
@@ -16,6 +17,25 @@ export namespace requests {
       const errorMessage: iMessage = {
         message: "Failed to insert the data in the database",
       };
+
+      console.error(errorObject.stack);
+
+      return res.status(500).send(errorMessage);
+    }
+  };
+
+  export const getAllDevelopers = async (_: Request, res: Response) => {
+    try {
+      const allDevelopersList: iDeveloperJoinDeveloperInfo[] =
+        await database.getAllDevelopers();
+
+      return res.status(200).send(allDevelopersList);
+    } catch (error) {
+      const errorMessage: iMessage = {
+        message: "Failed to get developers data in the database",
+      };
+
+      const errorObject = error as Error;
 
       console.error(errorObject.stack);
 

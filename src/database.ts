@@ -1,6 +1,6 @@
 import { format } from "node-pg-format";
 import { Client, QueryResult } from "pg";
-import { iCount, iDeveloper } from "./interfaces";
+import { iCount, iDeveloper, iDeveloperJoinDeveloperInfo } from "./interfaces";
 import "dotenv/config";
 
 export namespace database {
@@ -49,10 +49,12 @@ export namespace database {
     "name" AS developerName,
     email AS developerEmail
     FROM developers d
-    JOIN developer_infos di
+    LEFT JOIN developer_infos di
     ON d.id = di.id;
     `;
 
-    //const queryResult;
+    const queryResult: QueryResult<iDeveloperJoinDeveloperInfo> = await connection.query(queryString);
+
+    return queryResult.rows;
   };
 }
