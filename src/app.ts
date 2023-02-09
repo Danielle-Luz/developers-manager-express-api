@@ -10,7 +10,7 @@ api.use(express.json());
 
 api.post(
   "/developers",
-  middlewares.checkDeveloperKeys,
+  middlewares.checkCreateDeveloperKeys,
   middlewares.storeDeveloperOnlyWithRightKeys,
   middlewares.checkDeveloperTypes,
   middlewares.checkNotUniqueEmail,
@@ -18,13 +18,23 @@ api.post(
 );
 api.post(
   "/developers/:id/infos",
-  middlewares.checkDeveloperInfoKeys,
+  middlewares.checkCreateDeveloperInfoKeys,
   middlewares.storeDeveloperInfoOnlyWithRightKeys,
   middlewares.checkPreferredOs,
   middlewares.checkDateFormat,
   middlewares.parseId,
   middlewares.checkIfDeveloperExists,
   requests.createDeveloperInfos
+);
+
+api.patch(
+  "/developers/:id",
+  middlewares.parseId,
+  middlewares.checkIfDeveloperExists,
+  middlewares.storeDeveloperOnlyWithRightKeys,
+  middlewares.checkDeveloperTypes,
+  middlewares.checkNotUniqueEmail,
+  
 );
 
 api.get("/developers", requests.getDevelopers);

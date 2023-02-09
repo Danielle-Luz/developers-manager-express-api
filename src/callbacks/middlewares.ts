@@ -1,9 +1,4 @@
-import {
-  iDeveloper,
-  iDeveloperInfo,
-  iMessage,
-  os
-} from "./../interfaces";
+import { iDeveloper, iDeveloperInfo, iMessage, os } from "./../interfaces";
 import { NextFunction, Request, Response } from "express";
 import { database } from "../database";
 
@@ -51,7 +46,7 @@ export namespace middlewares {
     return next();
   };
 
-  export const checkDeveloperKeys = (
+  export const checkCreateDeveloperKeys = (
     req: Request,
     res: Response,
     next: NextFunction
@@ -59,7 +54,7 @@ export namespace middlewares {
     checkKeys(req, res, next, developerModelKeys);
   };
 
-  export const checkDeveloperInfoKeys = (
+  export const checkCreateDeveloperInfoKeys = (
     req: Request,
     res: Response,
     next: NextFunction
@@ -75,11 +70,11 @@ export namespace middlewares {
   ) => {
     const { body: newData } = req;
 
-    const modelKeys = Object.keys(model);
+    const newDataKeys = Object.keys(newData);
 
     const wrongTypes: iMessage[] = [];
 
-    modelKeys.forEach((key) => {
+    newDataKeys.forEach((key) => {
       const hasRightType = newData[key].constructor === model[key]?.constructor;
       const constructorName = model[key]?.constructor.name.toLowerCase();
 
@@ -122,14 +117,16 @@ export namespace middlewares {
     const { body: newDeveloper } = req;
     const { email: newDeveloperEmail } = newDeveloper;
 
-    const { count: developersCount } = await database.getDevelopersCountByEmail(
-      newDeveloperEmail
-    );
-
-    if (developersCount > 0) {
-      const errorMessage: iMessage = { message: "Email already exists." };
-
-      return res.status(409).send(errorMessage);
+    if (newDeveloperEmail) {
+      const { count: developersCount } = await database.getDevelopersCountByEmail(
+        newDeveloperEmail
+      );
+  
+      if (developersCount > 0) {
+        const errorMessage: iMessage = { message: "Email already exists." };
+  
+        return res.status(409).send(errorMessage);
+      }
     }
 
     return next();
@@ -144,7 +141,9 @@ export namespace middlewares {
     const { body: newData } = req;
 
     rightKeys.forEach((key) => {
-      dataWithRightKeys[key] = newData[key];
+      if (newData[key]) {
+        dataWithRightKeys[key] = newData[key];
+      }
     });
 
     req.body = dataWithRightKeys;
@@ -196,7 +195,8 @@ export namespace middlewares {
     const preferredOs = req.body.preferred_os + "";
 
     const formattedOs =
-      (preferredOs[0] || "").toUpperCase() + preferredOs.substring(1).toLowerCase();
+      (preferredOs[0] || "").toUpperCase() +
+      preferredOs.substring(1).toLowerCase();
 
     const isAValidOs = os.includes(formattedOs);
 
