@@ -11,6 +11,7 @@ api.use(express.json());
 api.post(
   "/developers",
   middlewares.checkDeveloperKeys,
+  middlewares.storeDeveloperOnlyWithRightKeys,
   middlewares.checkDeveloperTypes,
   middlewares.checkNotUniqueEmail,
   requests.createDeveloper

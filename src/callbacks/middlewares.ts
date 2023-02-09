@@ -17,18 +17,18 @@ export namespace middlewares {
   ) => {
     const { body: newDeveloper } = req;
     const newDeveloperKeys = Object.keys(newDeveloper);
+
     const missingKeys: string[] = [];
-    const hasAllKeys = developerModelKeys.every((key) => {
+
+    developerModelKeys.forEach((key) => {
       const hasKey = newDeveloperKeys.includes(key);
 
       if (!hasKey) {
         missingKeys.push(key);
       }
-
-      return hasKey;
     });
 
-    if (!hasAllKeys) {
+    if (missingKeys.length > 0) {
       const errorMessage: iMessage = {
         message: "Missing required keys: " + missingKeys.join(", "),
       };
@@ -88,5 +88,22 @@ export namespace middlewares {
     }
 
     return next();
+  };
+
+  export const storeDeveloperOnlyWithRightKeys = (
+    req: Request,
+    _: Response,
+    next: NextFunction
+  ) => {
+    const { body: newDeveloper } = req;
+    const developerOnlyWithRightKeys: iDeveloper = { name: "", email: "" };
+
+    developerModelKeys.forEach((key) => {
+      developerOnlyWithRightKeys[key] = newDeveloper[key];
+    });
+
+    req.body = developerOnlyWithRightKeys;
+
+    next();
   };
 }
