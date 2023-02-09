@@ -1,6 +1,6 @@
 import { format } from "node-pg-format";
 import { Client, QueryResult } from "pg";
-import { iCount, iDeveloper } from "./interfaces";
+import { iCount, iDeveloper, iDeveloperJoinDeveloperInfo } from "./interfaces";
 import "dotenv/config";
 
 export namespace database {
@@ -37,5 +37,31 @@ export namespace database {
     );
 
     return queryResult.rows[0];
+  };
+
+  export const getDevelopers = async (id?: number) => {
+    let queryString = `
+    SELECT 
+    di.id AS developerInfoID, 
+    developer_since AS developerInfoDeveloperSince,
+    preferred_os AS developerInfoPreferredOS,
+    d.id AS developerID,
+    "name" AS developerName,
+    email AS developerEmail
+    FROM developers d
+    LEFT JOIN developer_infos di
+    ON d.id = di.id
+    `;
+
+    if (id || id === 0) {
+      queryString += "WHERE d.id = %L";
+
+      queryString = format(queryString, id);
+    }
+
+    const queryResult: QueryResult<iDeveloperJoinDeveloperInfo> =
+      await connection.query(queryString);
+
+    return queryResult.rows;
   };
 }
