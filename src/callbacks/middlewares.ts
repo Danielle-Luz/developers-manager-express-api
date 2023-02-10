@@ -62,6 +62,43 @@ export namespace middlewares {
     checkKeys(req, res, next, developerInfoModelKeys);
   };
 
+  export const checkEmptyKeys = (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+    modelKeys: string[]
+  ) => {
+    const dataKeys = Object.keys(req.body);
+
+    if (dataKeys.length === 0) {
+      const errorMessage: iMessage = {
+        message: `Request body should have one or more of this keys: ${modelKeys.join(
+          ", "
+        )}`,
+      };
+
+      return res.status(400).send(errorMessage);
+    }
+
+    next();
+  };
+
+  export const checkEmptyDeveloperKeys = (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    checkEmptyKeys(req, res, next, developerModelKeys);
+  };
+
+  export const checkEmptyDeveloperInfoKeys = (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    checkEmptyKeys(req, res, next, developerInfoModelKeys);
+  };
+
   const checkTypes = (
     req: Request,
     res: Response,
