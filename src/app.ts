@@ -31,6 +31,7 @@ api.patch(
   "/developers/:id",
   middlewares.parseId,
   middlewares.checkIfDeveloperExists,
+  middlewares.checkEmptyDeveloperKeys,
   middlewares.storeDeveloperOnlyWithRightKeys,
   middlewares.checkDeveloperTypes,
   middlewares.checkNotUniqueEmail,
