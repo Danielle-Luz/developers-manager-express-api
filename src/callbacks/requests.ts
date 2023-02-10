@@ -87,7 +87,7 @@ export namespace requests {
 
   export const updateDeveloperInfo = async (req: Request, res: Response) => {
     req.parsedId = req.developerInfoId;
-    
+
     return await updateData(req, res, "developer_infos");
   };
 
@@ -104,6 +104,28 @@ export namespace requests {
     } catch (error) {
       const errorMessage: iMessage = {
         message: "Failed to get developers data in the database",
+      };
+
+      const errorObject = error as Error;
+
+      console.error(errorObject.stack);
+
+      return res.status(500).send(errorMessage);
+    }
+  };
+
+  export const deleteDeveloper = async (req: Request, res: Response) => {
+    try {
+      await database.deleteData(
+        "developers",
+        "id",
+        req.parsedId
+      );
+
+      return res.status(204).send();
+    } catch (error) {
+      const errorMessage: iMessage = {
+        message: "Failed to delete developer from the database",
       };
 
       const errorObject = error as Error;

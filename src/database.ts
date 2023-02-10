@@ -118,4 +118,19 @@ export namespace database {
 
     return queryResult.rows;
   };
+
+  export const deleteData = async (
+    table: string,
+    deletedColumn: string,
+    deletedDataId: number
+  ) => {
+    const queryString = `
+    DELETE FROM %I
+    WHERE %I = %L
+    `;
+
+    await connection.query(
+      format(queryString, table, deletedColumn, deletedDataId)
+    );
+  };
 }
