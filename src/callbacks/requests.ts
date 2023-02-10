@@ -52,6 +52,35 @@ export namespace requests {
     }
   };
 
+  export const updateData = async (
+    req: Request,
+    res: Response,
+    tableName: string
+  ) => {
+    const { body: updatedData } = req;
+    const updatedDataId = req.parsedId;
+
+    try {
+      const updatedDataResult = await database.updateRegister(
+        tableName,
+        updatedDataId,
+        updatedData
+      );
+
+      return res.status(200).send(updatedDataResult);
+    } catch (error) {
+      const errorObject = error as Error;
+
+      const errorMessage: iMessage = {
+        message: "Failed to update the data",
+      };
+
+      console.error(errorObject.stack);
+
+      return res.status(500).send(errorMessage);
+    }
+  };
+
   export const getDevelopers = async (req: Request, res: Response) => {
     const developerId = req.parsedId;
     const hasId = developerId || developerId === 0;
