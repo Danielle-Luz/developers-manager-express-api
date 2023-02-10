@@ -58,6 +58,13 @@ api.get(
   requests.getDevelopers
 );
 
+api.delete(
+  "/developers/:id",
+  middlewares.parseId,
+  middlewares.checkIfDeveloperExists,
+  requests.deleteDeveloper
+);
+
 api.listen(3000, async () => {
   await database.connection.connect();
 

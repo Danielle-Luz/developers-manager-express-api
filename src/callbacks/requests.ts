@@ -118,7 +118,7 @@ export namespace requests {
     try {
       await database.deleteData(
         "developers",
-        "developer_info_id",
+        "id",
         req.parsedId
       );
 
