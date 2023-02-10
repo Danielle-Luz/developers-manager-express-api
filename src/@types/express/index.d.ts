@@ -6,6 +6,7 @@ declare global {
     interface Request {
       parsedId: number;
       foundDeveloper: iDeveloperJoinDeveloperInfo;
+      developerInfoId: number;
     }
   }
 }

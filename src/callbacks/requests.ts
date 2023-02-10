@@ -86,19 +86,9 @@ export namespace requests {
   };
 
   export const updateDeveloperInfo = async (req: Request, res: Response) => {
-    const developerWithUpdatedInfo = (await database.getDevelopers(req.parsedId))[0];
-    const updatedDeveloperInfoId = Object.values(developerWithUpdatedInfo)[0];
-
-    if (updatedDeveloperInfoId !== null) {
-      req.parsedId = updatedDeveloperInfoId;
-      return await updateData(req, res, "developer_infos");
-    }
-
-    const errorMessage: iMessage = {
-      message: "The developer does not have a related developer info",
-    };
-
-    return res.status(400).send(errorMessage);
+    req.parsedId = req.developerInfoId;
+    
+    return await updateData(req, res, "developer_infos");
   };
 
   export const getDevelopers = async (req: Request, res: Response) => {

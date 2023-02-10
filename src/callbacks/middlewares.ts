@@ -202,6 +202,40 @@ export namespace middlewares {
     );
   };
 
+  export const checkIfDeveloperHasInfo = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    const developerWithUpdatedInfo = (
+      await database.getDevelopers(req.parsedId)
+    )[0];
+    const updatedDeveloperInfoId = Object.values(developerWithUpdatedInfo)[0];
+
+    const errorMessage: iMessage = {
+      message: "",
+    };
+
+    if (req.method === "PATCH") {
+      if (isNaN(updatedDeveloperInfoId)) {
+        errorMessage.message = "The developer has not a related developer info";
+
+        return res.status(400).send(errorMessage);
+      }
+    } else {
+      if (updatedDeveloperInfoId !== null) {
+        errorMessage.message =
+          "The developer already has a related developer info";
+
+        return res.status(400).send(errorMessage);
+      }
+    }
+
+    req.developerInfoId = updatedDeveloperInfoId;
+
+    next();
+  };
+
   export const checkDateFormat = (
     req: Request,
     res: Response,

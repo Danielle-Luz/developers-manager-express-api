@@ -96,15 +96,15 @@ export namespace database {
   export const getDevelopers = async (id?: number) => {
     let queryString = `
     SELECT 
-    di.id AS developerInfoID, 
-    developer_since AS developerInfoDeveloperSince,
-    preferred_os AS developerInfoPreferredOS,
-    d.id AS developerID,
-    "name" AS developerName,
-    email AS developerEmail
+    di.id AS "developerInfoID", 
+    developer_since AS "developerInfoDeveloperSince",
+    preferred_os AS "developerInfoPreferredOS",
+    d.id AS "developerID",
+    "name" AS "developerName",
+    email AS "developerEmail"
     FROM developers d
     LEFT JOIN developer_infos di
-    ON d.id = di.id
+    ON d.id = di.developer_id
     `;
 
     if (id || id === 0) {

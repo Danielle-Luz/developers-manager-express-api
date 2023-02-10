@@ -24,6 +24,7 @@ api.post(
   middlewares.checkDateFormat,
   middlewares.parseId,
   middlewares.checkIfDeveloperExists,
+  middlewares.checkIfDeveloperHasInfo,
   requests.createDeveloperInfos
 );
 
@@ -45,6 +46,7 @@ api.patch(
   middlewares.storeDeveloperInfoOnlyWithRightKeys,
   middlewares.checkPreferredOs,
   middlewares.checkDateFormat,
+  middlewares.checkIfDeveloperHasInfo,
   requests.updateDeveloperInfo
 );
 
