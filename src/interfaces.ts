@@ -29,7 +29,7 @@ export interface iProject {
   id?: number
 	name: string;
 	description: string;
-	estimated_time: number;
+	estimated_time: string;
 	repository: string;
 	start_date: Date;
 	end_date?: Date;

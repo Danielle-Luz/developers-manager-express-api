@@ -1,4 +1,4 @@
-import { iDeveloper, iDeveloperInfo, iMessage, os } from "./../interfaces";
+import { iDeveloper, iDeveloperInfo, iMessage, iProject, os } from "./../interfaces";
 import { NextFunction, Request, Response } from "express";
 import { database } from "../database";
 
@@ -12,6 +12,15 @@ export namespace middlewares {
     developer_since: new Date("2023/01/10"),
     preferred_os: "",
   };
+
+  const projectModel: iProject = {
+    name: "",
+    description: "",
+    estimated_time: "",
+    repository: "",
+    start_date: new Date("2023/01/10"),
+    developer_id: 0
+  }
 
   const developerModelKeys = Object.keys(developerModel);
   const developerInfoModelKeys = Object.keys(developerInfoModel);
