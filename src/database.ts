@@ -58,7 +58,7 @@ export namespace database {
 
     const queryString = `
     UPDATE %I
-    SET (%I) = (%L)
+    SET (%I) = ROW(%L)
     WHERE id = %L
     RETURNING *
     `;
