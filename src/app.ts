@@ -10,15 +10,53 @@ api.use(express.json());
 
 api.post(
   "/developers",
-  middlewares.checkDeveloperKeys,
+  middlewares.checkCreateDeveloperKeys,
   middlewares.storeDeveloperOnlyWithRightKeys,
   middlewares.checkDeveloperTypes,
   middlewares.checkNotUniqueEmail,
   requests.createDeveloper
 );
+api.post(
+  "/developers/:id/infos",
+  middlewares.checkCreateDeveloperInfoKeys,
+  middlewares.storeDeveloperInfoOnlyWithRightKeys,
+  middlewares.checkPreferredOs,
+  middlewares.checkDateFormat,
+  middlewares.parseId,
+  middlewares.checkIfDeveloperExists,
+  middlewares.checkIfDeveloperHasInfo,
+  requests.createDeveloperInfos
+);
+
+api.patch(
+  "/developers/:id",
+  middlewares.parseId,
+  middlewares.checkIfDeveloperExists,
+  middlewares.checkEmptyDeveloperKeys,
+  middlewares.storeDeveloperOnlyWithRightKeys,
+  middlewares.checkDeveloperTypes,
+  middlewares.checkNotUniqueEmail,
+  requests.updateDeveloper
+);
+api.patch(
+  "/developers/:id/infos",
+  middlewares.parseId,
+  middlewares.checkIfDeveloperExists,
+  middlewares.checkEmptyDeveloperInfoKeys,
+  middlewares.storeDeveloperInfoOnlyWithRightKeys,
+  middlewares.checkPreferredOs,
+  middlewares.checkDateFormat,
+  middlewares.checkIfDeveloperHasInfo,
+  requests.updateDeveloperInfo
+);
 
 api.get("/developers", requests.getDevelopers);
-api.get("/developers/:id", requests.getDevelopers);
+api.get(
+  "/developers/:id",
+  middlewares.parseId,
+  middlewares.checkIfDeveloperExists,
+  requests.getDevelopers
+);
 
 api.listen(3000, async () => {
   await database.connection.connect();

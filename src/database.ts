@@ -1,6 +1,12 @@
 import { format } from "node-pg-format";
 import { Client, QueryResult } from "pg";
-import { iCount, iDeveloper, iDeveloperJoinDeveloperInfo } from "./interfaces";
+import {
+  iCount,
+  iDeveloper,
+  iDeveloperInfo,
+  iDeveloperJoinDeveloperInfo,
+  iId,
+} from "./interfaces";
 import "dotenv/config";
 
 export namespace database {
@@ -22,35 +28,83 @@ export namespace database {
     return queryResult.rows[0];
   };
 
-  export const createDeveloper = async (newDeveloperData: iDeveloper) => {
-    const newDeveloperDataKeys = Object.keys(newDeveloperData);
-    const newDeveloperDataValues = Object.values(newDeveloperData);
+  export const createRegister = async (
+    newRegister: iDeveloper | iDeveloperInfo,
+    table: string
+  ) => {
+    const newRegisterKeys = Object.keys(newRegister);
+    const newRegisterValues = Object.values(newRegister);
 
     const queryString = `
-    INSERT INTO developers (%I)
+    INSERT INTO %I (%I)
     VALUES (%L)
     RETURNING *
     `;
 
     const queryResult: QueryResult<iDeveloper> = await connection.query(
-      format(queryString, newDeveloperDataKeys, newDeveloperDataValues)
+      format(queryString, table, newRegisterKeys, newRegisterValues)
     );
 
     return queryResult.rows[0];
   };
 
+  export const updateRegister = async (
+    tableName: string,
+    registerId: number | undefined,
+    updatedData: iDeveloperInfo | iDeveloper | iId
+  ) => {
+    const dataKeys = Object.keys(updatedData);
+    const dataValues = Object.values(updatedData);
+
+    const queryString = `
+    UPDATE %I
+    SET (%I) = ROW(%L)
+    WHERE id = %L
+    RETURNING *
+    `;
+
+    const updatedDataResult = await connection.query(
+      format(queryString, tableName, dataKeys, dataValues, registerId)
+    );
+
+    return updatedDataResult.rows[0];
+  };
+
+  export const createDeveloperInfo = async (
+    developerId: number,
+    newDeveloperInfo: iDeveloperInfo
+  ) => {
+    const createdDeveloperInfo = await createRegister(
+      newDeveloperInfo,
+      "developer_infos"
+    );
+    const developerInfoId = createdDeveloperInfo.id;
+
+    const developerIdObject: iId = { developer_id: developerId };
+    const developerInfoIdObject: iId = { developer_info_id: developerInfoId };
+
+    await updateRegister("developers", developerId, developerInfoIdObject);
+    const updatedDeveloperInfo = await updateRegister(
+      "developer_infos",
+      developerInfoId,
+      developerIdObject
+    );
+
+    return updatedDeveloperInfo;
+  };
+
   export const getDevelopers = async (id?: number) => {
     let queryString = `
     SELECT 
-    di.id AS developerInfoID, 
-    developer_since AS developerInfoDeveloperSince,
-    preferred_os AS developerInfoPreferredOS,
-    d.id AS developerID,
-    "name" AS developerName,
-    email AS developerEmail
+    di.id AS "developerInfoID", 
+    developer_since AS "developerInfoDeveloperSince",
+    preferred_os AS "developerInfoPreferredOS",
+    d.id AS "developerID",
+    "name" AS "developerName",
+    email AS "developerEmail"
     FROM developers d
     LEFT JOIN developer_infos di
-    ON d.id = di.id
+    ON d.id = di.developer_id
     `;
 
     if (id || id === 0) {

@@ -1,4 +1,4 @@
-import { iDeveloper, iMessage } from "./../interfaces";
+import { iDeveloper, iDeveloperInfo, iMessage, os } from "./../interfaces";
 import { NextFunction, Request, Response } from "express";
 import { database } from "../database";
 
@@ -8,20 +8,28 @@ export namespace middlewares {
     email: "",
   };
 
-  const developerModelKeys = Object.keys(developerModel);
+  const developerInfoModel: iDeveloperInfo = {
+    developer_since: new Date("2023/01/10"),
+    preferred_os: "",
+  };
 
-  export const checkDeveloperKeys = (
+  const developerModelKeys = Object.keys(developerModel);
+  const developerInfoModelKeys = Object.keys(developerInfoModel);
+
+  const checkKeys = (
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
+    modelKeys: string[]
   ) => {
-    const { body: newDeveloper } = req;
-    const newDeveloperKeys = Object.keys(newDeveloper);
+    const { body: newData } = req;
+
+    const newDataKeys = Object.keys(newData);
 
     const missingKeys: string[] = [];
 
-    developerModelKeys.forEach((key) => {
-      const hasKey = newDeveloperKeys.includes(key);
+    modelKeys.forEach((key) => {
+      const hasKey = newDataKeys.includes(key);
 
       if (!hasKey) {
         missingKeys.push(key);
@@ -38,20 +46,74 @@ export namespace middlewares {
     return next();
   };
 
-  export const checkDeveloperTypes = (
+  export const checkCreateDeveloperKeys = (
     req: Request,
     res: Response,
     next: NextFunction
   ) => {
-    const { body: newDeveloper } = req;
+    checkKeys(req, res, next, developerModelKeys);
+  };
+
+  export const checkCreateDeveloperInfoKeys = (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    checkKeys(req, res, next, developerInfoModelKeys);
+  };
+
+  export const checkEmptyKeys = (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+    modelKeys: string[]
+  ) => {
+    const dataKeys = Object.keys(req.body);
+
+    if (dataKeys.length === 0) {
+      const errorMessage: iMessage = {
+        message: `Request body should have one or more of this keys: ${modelKeys.join(
+          ", "
+        )}`,
+      };
+
+      return res.status(400).send(errorMessage);
+    }
+
+    next();
+  };
+
+  export const checkEmptyDeveloperKeys = (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    checkEmptyKeys(req, res, next, developerModelKeys);
+  };
+
+  export const checkEmptyDeveloperInfoKeys = (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    checkEmptyKeys(req, res, next, developerInfoModelKeys);
+  };
+
+  const checkTypes = (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+    model: iDeveloperInfo | iDeveloper
+  ) => {
+    const { body: newData } = req;
+
+    const newDataKeys = Object.keys(newData);
 
     const wrongTypes: iMessage[] = [];
 
-    developerModelKeys.forEach((key) => {
-      const hasRightType =
-        newDeveloper[key].constructor === developerModel[key]?.constructor;
-      const constructorName =
-        developerModel[key]?.constructor.name.toLowerCase();
+    newDataKeys.forEach((key) => {
+      const hasRightType = newData[key].constructor === model[key]?.constructor;
+      const constructorName = model[key]?.constructor.name.toLowerCase();
 
       if (!hasRightType) {
         const errorMessage: iMessage = {
@@ -68,6 +130,22 @@ export namespace middlewares {
     return next();
   };
 
+  export const checkDeveloperTypes = (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    checkTypes(req, res, next, developerModel);
+  };
+
+  export const checkDeveloperInfoTypes = (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    checkTypes(req, res, next, developerInfoModel);
+  };
+
   export const checkNotUniqueEmail = async (
     req: Request,
     res: Response,
@@ -76,17 +154,37 @@ export namespace middlewares {
     const { body: newDeveloper } = req;
     const { email: newDeveloperEmail } = newDeveloper;
 
-    const { count: developersCount } = await database.getDevelopersCountByEmail(
-      newDeveloperEmail
-    );
+    if (newDeveloperEmail) {
+      const { count: developersCount } =
+        await database.getDevelopersCountByEmail(newDeveloperEmail);
 
-    if (developersCount > 0) {
-      const errorMessage: iMessage = { message: "Email already exists." };
+      if (developersCount > 0) {
+        const errorMessage: iMessage = { message: "Email already exists." };
 
-      return res.status(409).send(errorMessage);
+        return res.status(409).send(errorMessage);
+      }
     }
 
     return next();
+  };
+
+  const storeDataOnlyWithRightKeys = (
+    req: Request,
+    next: NextFunction,
+    dataWithRightKeys: iDeveloper | iDeveloperInfo,
+    rightKeys: string[]
+  ) => {
+    const { body: newData } = req;
+
+    rightKeys.forEach((key) => {
+      if (newData[key]) {
+        dataWithRightKeys[key] = newData[key];
+      }
+    });
+
+    req.body = dataWithRightKeys;
+
+    next();
   };
 
   export const storeDeveloperOnlyWithRightKeys = (
@@ -94,14 +192,145 @@ export namespace middlewares {
     _: Response,
     next: NextFunction
   ) => {
-    const { body: newDeveloper } = req;
-    const developerOnlyWithRightKeys: iDeveloper = { name: "", email: "" };
+    const developerOnlyWithRightKeys: iDeveloper = {};
 
-    developerModelKeys.forEach((key) => {
-      developerOnlyWithRightKeys[key] = newDeveloper[key];
-    });
+    storeDataOnlyWithRightKeys(
+      req,
+      next,
+      developerOnlyWithRightKeys,
+      developerModelKeys
+    );
+  };
 
-    req.body = developerOnlyWithRightKeys;
+  export const checkIfDeveloperHasInfo = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    const developerWithUpdatedInfo = (
+      await database.getDevelopers(req.parsedId)
+    )[0];
+    const updatedDeveloperInfoId = Object.values(developerWithUpdatedInfo)[0];
+
+    const errorMessage: iMessage = {
+      message: "",
+    };
+
+    if (req.method === "PATCH") {
+      if (isNaN(updatedDeveloperInfoId)) {
+        errorMessage.message = "The developer has not a related developer info";
+
+        return res.status(400).send(errorMessage);
+      }
+    } else {
+      if (updatedDeveloperInfoId !== null) {
+        errorMessage.message =
+          "The developer already has a related developer info";
+
+        return res.status(400).send(errorMessage);
+      }
+    }
+
+    req.developerInfoId = updatedDeveloperInfoId;
+
+    next();
+  };
+
+  export const checkDateFormat = (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    const dateRegex = /^\d{4}\/\d{2}\/\d{2}$/;
+    const hasRightDateFormat = dateRegex.test(req.body.developer_since);
+
+    if (!hasRightDateFormat) {
+      const errorMessage: iMessage = {
+        message: "The date should have the format: 0000/00/00",
+      };
+
+      return res.status(400).send(errorMessage);
+    }
+
+    req.body.developer_since = new Date(req.body.developer_since);
+
+    next();
+  };
+
+  export const checkPreferredOs = (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    const preferredOs = req.body.preferred_os + "";
+
+    let formattedOs = (preferredOs[0] || "").toUpperCase();
+    formattedOs +=
+      preferredOs.toLowerCase() === "macos"
+        ? preferredOs.substring(1, 3).toLowerCase() +
+          preferredOs.substring(3).toUpperCase()
+        : preferredOs.substring(1).toLowerCase();
+
+    const isAValidOs = os.includes(formattedOs);
+
+    if (!isAValidOs) {
+      const errorMessage: iMessage = {
+        message: `Preferred OS should have one of this values: ${os.join(
+          ", "
+        )}`,
+      };
+
+      return res.status(400).send(errorMessage);
+    }
+
+    req.body.preferred_os = formattedOs;
+
+    next();
+  };
+
+  export const storeDeveloperInfoOnlyWithRightKeys = (
+    req: Request,
+    _: Response,
+    next: NextFunction
+  ) => {
+    const developerInfoOnlyWithRightKeys: iDeveloperInfo = {
+      developer_since: new Date("2023/01/10"),
+      preferred_os: "",
+    };
+
+    storeDataOnlyWithRightKeys(
+      req,
+      next,
+      developerInfoOnlyWithRightKeys,
+      developerInfoModelKeys
+    );
+  };
+
+  export const parseId = (req: Request, _: Response, next: NextFunction) => {
+    const developerId = parseInt(req.params.id);
+    req.parsedId = isNaN(developerId) ? -1 : developerId;
+
+    next();
+  };
+
+  export const checkIfDeveloperExists = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    const developerId = req.parsedId;
+
+    const foundDeveloper = await database.getDevelopers(developerId);
+
+    if (foundDeveloper.length === 0) {
+      const errorMessage: iMessage = {
+        message: "Developer not found.",
+      };
+
+      return res.status(404).send(errorMessage);
+    }
+
+    req.foundDeveloper = foundDeveloper[0];
 
     next();
   };

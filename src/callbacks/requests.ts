@@ -4,13 +4,13 @@ import { database } from "../database";
 import { iMessage } from "../interfaces";
 
 export namespace requests {
-  export const createDeveloper = async (req: Request, res: Response) => {
-    const { body: newDeveloper } = req;
+  const createRegister = async (req: Request, res: Response, table: string) => {
+    const { body: newRegister } = req;
 
     try {
-      const createdDeveloper = await database.createDeveloper(newDeveloper);
+      const createdRegister = await database.createRegister(newRegister, table);
 
-      return res.status(201).send(createdDeveloper);
+      return res.status(201).send(createdRegister);
     } catch (error) {
       const errorObject = error as Error;
 
@@ -24,9 +24,75 @@ export namespace requests {
     }
   };
 
+  export const createDeveloper = async (req: Request, res: Response) => {
+    await createRegister(req, res, "developers");
+  };
+
+  export const createDeveloperInfos = async (req: Request, res: Response) => {
+    const { body: newDeveloperInfo } = req;
+    const developerId = req.parsedId;
+
+    try {
+      const createdDeveloperInfo = await database.createDeveloperInfo(
+        developerId,
+        newDeveloperInfo
+      );
+
+      return res.status(201).send(createdDeveloperInfo);
+    } catch (error) {
+      const errorObject = error as Error;
+
+      const errorMessage: iMessage = {
+        message: "Failed to insert the developer info in the database",
+      };
+
+      console.error(errorObject.stack);
+
+      return res.status(500).send(errorMessage);
+    }
+  };
+
+  export const updateData = async (
+    req: Request,
+    res: Response,
+    tableName: string
+  ) => {
+    const { body: updatedData } = req;
+    const updatedDataId = req.parsedId;
+
+    try {
+      const updatedDataResult = await database.updateRegister(
+        tableName,
+        updatedDataId,
+        updatedData
+      );
+
+      return res.status(200).send(updatedDataResult);
+    } catch (error) {
+      const errorObject = error as Error;
+
+      const errorMessage: iMessage = {
+        message: "Failed to update the data",
+      };
+
+      console.error(errorObject.stack);
+
+      return res.status(500).send(errorMessage);
+    }
+  };
+
+  export const updateDeveloper = async (req: Request, res: Response) => {
+    await updateData(req, res, "developers");
+  };
+
+  export const updateDeveloperInfo = async (req: Request, res: Response) => {
+    req.parsedId = req.developerInfoId;
+    
+    return await updateData(req, res, "developer_infos");
+  };
+
   export const getDevelopers = async (req: Request, res: Response) => {
-    let developerId = parseInt(req.params.id);
-    developerId = isNaN(developerId) ? -1 : developerId;
+    const developerId = req.parsedId;
     const hasId = developerId || developerId === 0;
 
     try {
@@ -34,13 +100,6 @@ export namespace requests {
         ? await database.getDevelopers(developerId)
         : await database.getDevelopers();
 
-      if (hasId && allDevelopersList.length === 0) {
-        const errorMessage: iMessage = {
-          message: "Developer not found.",
-        };
-
-        return res.status(404).send(errorMessage);
-      }
       return res.status(200).send(allDevelopersList);
     } catch (error) {
       const errorMessage: iMessage = {
