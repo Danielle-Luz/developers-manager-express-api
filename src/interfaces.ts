@@ -25,6 +25,11 @@ export interface iDeveloperJoinDeveloperInfo {
   developer_info_preferred_os: "" | null;
 }
 
+export interface iId {
+  developer_info_id?: number | undefined;
+  developer_id?: number | undefined;
+}
+
 export interface iMessage {
   message: string;
 }

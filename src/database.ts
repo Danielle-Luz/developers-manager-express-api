@@ -5,6 +5,7 @@ import {
   iDeveloper,
   iDeveloperInfo,
   iDeveloperJoinDeveloperInfo,
+  iId,
 } from "./interfaces";
 import "dotenv/config";
 
@@ -47,12 +48,13 @@ export namespace database {
     return queryResult.rows[0];
   };
 
-  export const createDeveloperInfo = async (
-    developerId: number,
-    newDeveloperInfo: iDeveloperInfo,
+  export const updateRegister = async (
+    tableName: string,
+    registerId: number | undefined,
+    updatedData: iDeveloperInfo | iDeveloper | iId
   ) => {
-    const createdDeveloperInfo = await createRegister(newDeveloperInfo, "developer_infos");
-    const developerInfoId = createdDeveloperInfo.id;
+    const dataKeys = Object.keys(updatedData);
+    const dataValues = Object.values(updatedData);
 
     const queryString = `
     UPDATE %I
@@ -61,24 +63,31 @@ export namespace database {
     RETURNING *
     `;
 
-    await connection.query(
-      format(
-        queryString,
-        "developers",
-        "developer_info_id",
-        developerInfoId,
-        developerId
-      )
+    const updatedDataResult = await connection.query(
+      format(queryString, tableName, dataKeys, dataValues, registerId)
     );
 
-    const updatedDeveloperInfo = await connection.query(
-      format(
-        queryString,
-        "developer_infos",
-        "developer_id",
-        developerId,
-        developerInfoId
-      )
+    return updatedDataResult.rows[0];
+  };
+
+  export const createDeveloperInfo = async (
+    developerId: number,
+    newDeveloperInfo: iDeveloperInfo
+  ) => {
+    const createdDeveloperInfo = await createRegister(
+      newDeveloperInfo,
+      "developer_infos"
+    );
+    const developerInfoId = createdDeveloperInfo.id;
+
+    const developerIdObject: iId = { developer_id: developerId };
+    const developerInfoIdObject: iId = { developer_info_id: developerInfoId };
+
+    await updateRegister("developers", developerId, developerInfoIdObject);
+    const updatedDeveloperInfo = await updateRegister(
+      "developer_infos",
+      developerInfoId,
+      developerIdObject
     );
 
     return updatedDeveloperInfo.rows[0];
