@@ -25,6 +25,17 @@ export interface iDeveloperJoinDeveloperInfo {
   developer_info_preferred_os: "" | null;
 }
 
+export interface iProject {
+  id?: number
+	name: string;
+	description: string;
+	estimated_time: number;
+	repository: string;
+	start_date: Date;
+	end_date?: Date;
+	developer_id: number;
+}
+
 export interface iId {
   developer_info_id?: number | undefined;
   developer_id?: number | undefined;
