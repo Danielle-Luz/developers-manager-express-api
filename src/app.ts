@@ -37,6 +37,16 @@ api.patch(
   middlewares.checkNotUniqueEmail,
   requests.updateDeveloper
 );
+api.patch(
+  "/developers/:id/infos",
+  middlewares.parseId,
+  middlewares.checkIfDeveloperExists,
+  middlewares.checkEmptyDeveloperInfoKeys,
+  middlewares.storeDeveloperInfoOnlyWithRightKeys,
+  middlewares.checkPreferredOs,
+  middlewares.checkDateFormat,
+  requests.createDeveloperInfos
+);
 
 api.get("/developers", requests.getDevelopers);
 api.get(
