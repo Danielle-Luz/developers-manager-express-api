@@ -2,8 +2,8 @@ export const os = ["Windows", "Linux", "MacOS"];
 
 export interface iDeveloper {
   id?: number;
-  name: string;
-  email: string;
+  name?: string;
+  email?: string;
   developer_info_id?: number | null;
   [key: string]: string | number | null;
 }

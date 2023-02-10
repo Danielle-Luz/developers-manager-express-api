@@ -118,13 +118,12 @@ export namespace middlewares {
     const { email: newDeveloperEmail } = newDeveloper;
 
     if (newDeveloperEmail) {
-      const { count: developersCount } = await database.getDevelopersCountByEmail(
-        newDeveloperEmail
-      );
-  
+      const { count: developersCount } =
+        await database.getDevelopersCountByEmail(newDeveloperEmail);
+
       if (developersCount > 0) {
         const errorMessage: iMessage = { message: "Email already exists." };
-  
+
         return res.status(409).send(errorMessage);
       }
     }
@@ -156,7 +155,7 @@ export namespace middlewares {
     _: Response,
     next: NextFunction
   ) => {
-    const developerOnlyWithRightKeys: iDeveloper = { name: "", email: "" };
+    const developerOnlyWithRightKeys: iDeveloper = {};
 
     storeDataOnlyWithRightKeys(
       req,
