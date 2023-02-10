@@ -34,7 +34,7 @@ api.patch(
   middlewares.storeDeveloperOnlyWithRightKeys,
   middlewares.checkDeveloperTypes,
   middlewares.checkNotUniqueEmail,
-  
+  requests.updateDeveloper
 );
 
 api.get("/developers", requests.getDevelopers);

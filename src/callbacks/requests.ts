@@ -81,6 +81,10 @@ export namespace requests {
     }
   };
 
+  export const updateDeveloper = async (req: Request, res: Response) => {
+    await updateData(req, res, "developers");
+  };
+
   export const getDevelopers = async (req: Request, res: Response) => {
     const developerId = req.parsedId;
     const hasId = developerId || developerId === 0;
