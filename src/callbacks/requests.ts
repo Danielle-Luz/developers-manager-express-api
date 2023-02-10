@@ -86,12 +86,12 @@ export namespace requests {
   };
 
   export const updateDeveloperInfo = async (req: Request, res: Response) => {
-    const updatedDeveloperInfoId = parseInt(req.body.developer_info_id);
+    const developerWithUpdatedInfo = (await database.getDevelopers(req.parsedId))[0];
+    const updatedDeveloperInfoId = Object.values(developerWithUpdatedInfo)[0];
 
-    if (!isNaN(updatedDeveloperInfoId)) {
+    if (updatedDeveloperInfoId !== null) {
       req.parsedId = updatedDeveloperInfoId;
-
-      await updateData(req, res, "developer_infos");
+      return await updateData(req, res, "developer_infos");
     }
 
     const errorMessage: iMessage = {

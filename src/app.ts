@@ -45,7 +45,7 @@ api.patch(
   middlewares.storeDeveloperInfoOnlyWithRightKeys,
   middlewares.checkPreferredOs,
   middlewares.checkDateFormat,
-  requests.createDeveloperInfos
+  requests.updateDeveloperInfo
 );
 
 api.get("/developers", requests.getDevelopers);

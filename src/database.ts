@@ -90,7 +90,7 @@ export namespace database {
       developerIdObject
     );
 
-    return updatedDeveloperInfo.rows[0];
+    return updatedDeveloperInfo;
   };
 
   export const getDevelopers = async (id?: number) => {
