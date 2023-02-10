@@ -264,9 +264,12 @@ export namespace middlewares {
   ) => {
     const preferredOs = req.body.preferred_os + "";
 
-    const formattedOs =
-      (preferredOs[0] || "").toUpperCase() +
-      preferredOs.substring(1).toLowerCase();
+    let formattedOs = (preferredOs[0] || "").toUpperCase();
+    formattedOs +=
+      preferredOs.toLowerCase() === "macos"
+        ? preferredOs.substring(1, 3).toLowerCase() +
+          preferredOs.substring(3).toUpperCase()
+        : preferredOs.substring(1).toLowerCase();
 
     const isAValidOs = os.includes(formattedOs);
 
