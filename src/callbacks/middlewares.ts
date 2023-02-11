@@ -175,7 +175,13 @@ export namespace middlewares {
     res: Response,
     next: NextFunction
   ) => {
-    checkTypes(req, res, next, projectModel);
+    const projectModelWithEndDate = { ...projectModel };
+
+    if (req.body.end_date) {
+      projectModelWithEndDate.end_date = new Date("2023/03/01");
+    }
+
+    checkTypes(req, res, next, projectModelWithEndDate);
   };
 
   export const checkNotUniqueEmail = async (
@@ -239,12 +245,16 @@ export namespace middlewares {
     _: Response,
     next: NextFunction
   ) => {
-    const projecOnlytWithRightKeys: iProject = { ...projectModel };
+    const projectOnlytWithRightKeys: iProject = { ...projectModel };
+
+    if (req.body.end_date) {
+      projectOnlytWithRightKeys.end_date = new Date("2023/10/01");
+    }
 
     storeDataOnlyWithRightKeys(
       req,
       next,
-      projecOnlytWithRightKeys,
+      projectOnlytWithRightKeys,
       projectModelKeys
     );
   };
@@ -312,7 +322,7 @@ export namespace middlewares {
 
     if (!hasRightDateFormat) {
       const errorMessage: iMessage = {
-        message: "The date should have the format: 0000/00/00",
+        message: `The property ${dateProperty} should have the format: 0000/00/00`,
       };
 
       return res.status(400).send(errorMessage);
@@ -331,13 +341,19 @@ export namespace middlewares {
     checkDateFormat(req, res, next, "developer_since");
   };
 
-  export const checkProjectDateFormat = (
+  export const checkProjectStartDateFormat = (
     req: Request,
     res: Response,
     next: NextFunction
   ) => {
     checkDateFormat(req, res, next, "start_date");
+  };
 
+  export const checkProjectEndDateFormat = (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
     if (req.body.end_date) {
       checkDateFormat(req, res, next, "end_date");
     }

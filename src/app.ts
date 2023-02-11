@@ -32,10 +32,11 @@ api.post(
 api.post(
   "/projects",
   middlewares.checkProjectKeys,
-  middlewares.checkProjectDateFormat,
+  middlewares.checkProjectStartDateFormat,
+  middlewares.checkProjectEndDateFormat,
+  middlewares.storeProjectOnlyWithRightKeys,
   middlewares.checkProjectTypes,
   middlewares.storeBodyDeveloperId,
-  middlewares.storeProjectOnlyWithRightKeys,
   requests.createProject
 );
 
