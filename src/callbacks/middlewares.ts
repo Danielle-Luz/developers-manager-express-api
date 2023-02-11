@@ -555,13 +555,13 @@ export namespace middlewares {
     res: Response,
     next: NextFunction
   ) => {
-    const hasTechnology =
-      (
-        await database.getProjectsTechnologiesWithIds(
-          req.parsedId,
-          req.technologyId
-        )
-      ).length > 0;
+    const projectsTechnologiesIds =
+      await database.getProjectsTechnologiesWithIds(
+        req.parsedId,
+        req.technologyId
+      );
+
+    const hasTechnology = projectsTechnologiesIds.length > 0;
 
     const errorMessage: iMessage = { message: "" };
 
@@ -573,6 +573,8 @@ export namespace middlewares {
       errorMessage.message = "Project doesn't hava the deleted technology";
 
       return res.status(400).send(errorMessage);
+    } else if (req.method === "DELETE") {
+      req.projectTechnologyId = projectsTechnologiesIds[0].id;
     }
 
     next();

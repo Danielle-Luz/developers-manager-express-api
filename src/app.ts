@@ -49,6 +49,7 @@ api.post(
   middlewares.checkTechnologiesTypes,
   middlewares.checkTechnologyName,
   middlewares.checkIfProjectExists,
+  middlewares.checkIfProjectHasTechnology,
   requests.insertTechnologyInProject
 );
 
@@ -131,7 +132,8 @@ api.delete(
   middlewares.parseId,
   middlewares.checkIfProjectExists,
   middlewares.checkTechnologyName,
-  requests.deleteProject
+  middlewares.checkIfProjectHasTechnology,
+  requests.deleteProjectTechnology
 );
 
 api.listen(3000, async () => {

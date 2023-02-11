@@ -232,7 +232,7 @@ export namespace database {
   export const deleteData = async (
     table: string,
     deletedColumn: string,
-    deletedDataId: number
+    deletedDataId: number | undefined
   ) => {
     const queryString = `
     DELETE FROM %I

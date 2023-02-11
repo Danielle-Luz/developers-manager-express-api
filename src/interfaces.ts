@@ -71,6 +71,7 @@ export interface iTechnology {
 }
 
 export interface iId {
+  id?: number;
   developer_info_id?: number | undefined;
   developer_id?: number | undefined;
 }
