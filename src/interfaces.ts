@@ -25,6 +25,46 @@ export interface iDeveloperJoinDeveloperInfo {
   developer_info_preferred_os: "" | null;
 }
 
+export interface iProject {
+  id?: number
+	name: string;
+	description: string;
+	estimated_time: string;
+	repository: string;
+	start_date: Date;
+	end_date?: Date | null;
+	developer_id: number;
+  [key: string]: string | number | Date | null;
+}
+
+interface Project {
+  project_id: number;
+  project_name: string;
+  description: string;
+  estimated_time: string;
+  repository: string;
+  start_date: Date;
+  end_date: Date | null;
+  developer_id: number;
+  technology_id: number;
+  technology_name: string;
+}
+
+export interface iProjectJoinTechnologies {
+  project_id: number;
+  project_name: string;
+  project_description: string;
+  project_estimated_time: string;
+  project_repository: string;
+  project_start_date: string;
+  project_end_date: string | null;
+  project_developer_id: number | null;
+  technology_id: number | null;
+  technology_name: string | null;
+}
+
+export type tDeveloperProjects = iDeveloperJoinDeveloperInfo & iProjectJoinTechnologies;
+
 export interface iId {
   developer_info_id?: number | undefined;
   developer_id?: number | undefined;

@@ -1,4 +1,10 @@
-import { iDeveloper, iDeveloperInfo, iMessage, os } from "./../interfaces";
+import {
+  iDeveloper,
+  iDeveloperInfo,
+  iMessage,
+  iProject,
+  os,
+} from "./../interfaces";
 import { NextFunction, Request, Response } from "express";
 import { database } from "../database";
 
@@ -13,8 +19,18 @@ export namespace middlewares {
     preferred_os: "",
   };
 
+  const projectModel: iProject = {
+    name: "",
+    description: "",
+    estimated_time: "",
+    repository: "",
+    start_date: new Date("2023/01/10"),
+    developer_id: 0,
+  };
+
   const developerModelKeys = Object.keys(developerModel);
   const developerInfoModelKeys = Object.keys(developerInfoModel);
+  const projectModelKeys = Object.keys(projectModel);
 
   const checkKeys = (
     req: Request,
@@ -62,6 +78,14 @@ export namespace middlewares {
     checkKeys(req, res, next, developerInfoModelKeys);
   };
 
+  export const checkProjectKeys = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    checkKeys(req, res, next, projectModelKeys);
+  };
+
   export const checkEmptyKeys = (
     req: Request,
     res: Response,
@@ -99,11 +123,19 @@ export namespace middlewares {
     checkEmptyKeys(req, res, next, developerInfoModelKeys);
   };
 
+  export const checkEmptyProjectKeys = (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    checkEmptyKeys(req, res, next, [...projectModelKeys, "end_date"]);
+  };
+
   const checkTypes = (
     req: Request,
     res: Response,
     next: NextFunction,
-    model: iDeveloperInfo | iDeveloper
+    model: iDeveloperInfo | iDeveloper | iProject
   ) => {
     const { body: newData } = req;
 
@@ -146,6 +178,20 @@ export namespace middlewares {
     checkTypes(req, res, next, developerInfoModel);
   };
 
+  export const checkProjectTypes = (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    const projectModelWithEndDate = { ...projectModel };
+
+    if (req.body.end_date) {
+      projectModelWithEndDate.end_date = new Date("2023/03/01");
+    }
+
+    checkTypes(req, res, next, projectModelWithEndDate);
+  };
+
   export const checkNotUniqueEmail = async (
     req: Request,
     res: Response,
@@ -171,7 +217,7 @@ export namespace middlewares {
   const storeDataOnlyWithRightKeys = (
     req: Request,
     next: NextFunction,
-    dataWithRightKeys: iDeveloper | iDeveloperInfo,
+    dataWithRightKeys: iDeveloper | iDeveloperInfo | Partial<iProject>,
     rightKeys: string[]
   ) => {
     const { body: newData } = req;
@@ -199,6 +245,39 @@ export namespace middlewares {
       next,
       developerOnlyWithRightKeys,
       developerModelKeys
+    );
+  };
+
+  export const storeProjectOnlyWithRightKeys = (
+    req: Request,
+    _: Response,
+    next: NextFunction
+  ) => {
+    const projectOnlytWithRightKeys: Partial<iProject> = {};
+
+    storeDataOnlyWithRightKeys(
+      req,
+      next,
+      projectOnlytWithRightKeys,
+      [...projectModelKeys, "end_date"]
+    );
+  };
+
+  export const storeDeveloperInfoOnlyWithRightKeys = (
+    req: Request,
+    _: Response,
+    next: NextFunction
+  ) => {
+    const developerInfoOnlyWithRightKeys: iDeveloperInfo = {
+      developer_since: new Date("2023/01/10"),
+      preferred_os: "",
+    };
+
+    storeDataOnlyWithRightKeys(
+      req,
+      next,
+      developerInfoOnlyWithRightKeys,
+      developerInfoModelKeys
     );
   };
 
@@ -239,22 +318,55 @@ export namespace middlewares {
   export const checkDateFormat = (
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
+    dateProperty: string
   ) => {
     const dateRegex = /^\d{4}\/\d{2}\/\d{2}$/;
-    const hasRightDateFormat = dateRegex.test(req.body.developer_since);
+    const hasRightDateFormat = dateRegex.test(req.body[dateProperty]);
 
     if (!hasRightDateFormat) {
       const errorMessage: iMessage = {
-        message: "The date should have the format: 0000/00/00",
+        message: `The property ${dateProperty} should have the format: 0000/00/00`,
       };
 
       return res.status(400).send(errorMessage);
     }
 
-    req.body.developer_since = new Date(req.body.developer_since);
+    req.body[dateProperty] = new Date(req.body[dateProperty]);
 
     next();
+  };
+
+  export const checkDeveloperDateFormat = (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    checkDateFormat(req, res, next, "developer_since");
+  };
+
+  export const checkProjectStartDateFormat = (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    if (req.body.start_date) {
+      checkDateFormat(req, res, next, "start_date");
+    } else {
+      next();
+    }
+  };
+
+  export const checkProjectEndDateFormat = (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    if (req.body.end_date) {
+      checkDateFormat(req, res, next, "end_date");
+    } else {
+      next();
+    }
   };
 
   export const checkPreferredOs = (
@@ -288,29 +400,27 @@ export namespace middlewares {
     next();
   };
 
-  export const storeDeveloperInfoOnlyWithRightKeys = (
-    req: Request,
-    _: Response,
-    next: NextFunction
-  ) => {
-    const developerInfoOnlyWithRightKeys: iDeveloperInfo = {
-      developer_since: new Date("2023/01/10"),
-      preferred_os: "",
-    };
-
-    storeDataOnlyWithRightKeys(
-      req,
-      next,
-      developerInfoOnlyWithRightKeys,
-      developerInfoModelKeys
-    );
-  };
-
   export const parseId = (req: Request, _: Response, next: NextFunction) => {
     const developerId = parseInt(req.params.id);
     req.parsedId = isNaN(developerId) ? -1 : developerId;
 
     next();
+  };
+
+  export const storeBodyDeveloperId = (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    const developerId = req.body.developer_id;
+
+    if (developerId) {
+      req.parsedId = developerId;
+
+      checkIfDeveloperExists(req, res, next);
+    } else {
+      next();
+    }
   };
 
   export const checkIfDeveloperExists = async (
@@ -331,6 +441,26 @@ export namespace middlewares {
     }
 
     req.foundDeveloper = foundDeveloper[0];
+
+    next();
+  };
+
+  export const checkIfProjectExists = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    const projectId = req.parsedId;
+
+    const foundProject = await database.getProjects(projectId);
+
+    if (foundProject.length === 0) {
+      const errorMessage: iMessage = {
+        message: "Project not found.",
+      };
+
+      return res.status(404).send(errorMessage);
+    }
 
     next();
   };

@@ -16,16 +16,28 @@ api.post(
   middlewares.checkNotUniqueEmail,
   requests.createDeveloper
 );
+
 api.post(
   "/developers/:id/infos",
   middlewares.checkCreateDeveloperInfoKeys,
   middlewares.storeDeveloperInfoOnlyWithRightKeys,
   middlewares.checkPreferredOs,
-  middlewares.checkDateFormat,
+  middlewares.checkDeveloperDateFormat,
   middlewares.parseId,
   middlewares.checkIfDeveloperExists,
   middlewares.checkIfDeveloperHasInfo,
   requests.createDeveloperInfos
+);
+
+api.post(
+  "/projects",
+  middlewares.checkProjectKeys,
+  middlewares.checkProjectStartDateFormat,
+  middlewares.checkProjectEndDateFormat,
+  middlewares.storeProjectOnlyWithRightKeys,
+  middlewares.checkProjectTypes,
+  middlewares.storeBodyDeveloperId,
+  requests.createProject
 );
 
 api.patch(
@@ -38,6 +50,19 @@ api.patch(
   middlewares.checkNotUniqueEmail,
   requests.updateDeveloper
 );
+
+api.patch(
+  "/projects/:id",
+  middlewares.checkEmptyProjectKeys,
+  middlewares.storeBodyDeveloperId,
+  middlewares.parseId,
+  middlewares.checkProjectStartDateFormat,
+  middlewares.checkProjectEndDateFormat,
+  middlewares.storeProjectOnlyWithRightKeys,
+  middlewares.checkProjectTypes,
+  requests.updateProject
+);
+
 api.patch(
   "/developers/:id/infos",
   middlewares.parseId,
@@ -45,12 +70,13 @@ api.patch(
   middlewares.checkEmptyDeveloperInfoKeys,
   middlewares.storeDeveloperInfoOnlyWithRightKeys,
   middlewares.checkPreferredOs,
-  middlewares.checkDateFormat,
+  middlewares.checkDeveloperDateFormat,
   middlewares.checkIfDeveloperHasInfo,
   requests.updateDeveloperInfo
 );
 
 api.get("/developers", requests.getDevelopers);
+
 api.get(
   "/developers/:id",
   middlewares.parseId,
@@ -58,11 +84,34 @@ api.get(
   requests.getDevelopers
 );
 
+api.get("/projects", requests.getProjects);
+
+api.get(
+  "/projects/:id",
+  middlewares.parseId,
+  middlewares.checkIfProjectExists,
+  requests.getProjects
+);
+
+api.get(
+  "/developers/:id/projects",
+  middlewares.parseId,
+  middlewares.checkIfDeveloperExists,
+  requests.getDeveloperProjects
+);
+
 api.delete(
   "/developers/:id",
   middlewares.parseId,
   middlewares.checkIfDeveloperExists,
   requests.deleteDeveloper
+);
+
+api.delete(
+  "/projects/:id",
+  middlewares.parseId,
+  middlewares.checkIfProjectExists,
+  requests.deleteProject
 );
 
 api.listen(3000, async () => {

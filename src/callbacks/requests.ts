@@ -1,4 +1,7 @@
-import { iDeveloperJoinDeveloperInfo } from "./../interfaces";
+import {
+  iDeveloperJoinDeveloperInfo,
+  iProjectJoinTechnologies,
+} from "./../interfaces";
 import { Request, Response } from "express";
 import { database } from "../database";
 import { iMessage } from "../interfaces";
@@ -52,6 +55,10 @@ export namespace requests {
     }
   };
 
+  export const createProject = async (req: Request, res: Response) => {
+    await createRegister(req, res, "projects");
+  };
+
   export const updateData = async (
     req: Request,
     res: Response,
@@ -91,6 +98,10 @@ export namespace requests {
     return await updateData(req, res, "developer_infos");
   };
 
+  export const updateProject = async (req: Request, res: Response) => {
+    return await updateData(req, res, "projects");
+  };
+
   export const getDevelopers = async (req: Request, res: Response) => {
     const developerId = req.parsedId;
     const hasId = developerId || developerId === 0;
@@ -114,18 +125,77 @@ export namespace requests {
     }
   };
 
+  export const getProjects = async (req: Request, res: Response) => {
+    const projectId = req.parsedId;
+    const hasId = projectId || projectId === 0;
+
+    try {
+      const allProjectsList: iProjectJoinTechnologies[] = hasId
+        ? await database.getProjects(projectId)
+        : await database.getProjects();
+
+      return res.status(200).send(allProjectsList);
+    } catch (error) {
+      const errorMessage: iMessage = {
+        message: "Failed to get projects data in the database",
+      };
+
+      const errorObject = error as Error;
+
+      console.error(errorObject.stack);
+
+      return res.status(500).send(errorMessage);
+    }
+  };
+
+  export const getDeveloperProjects = async (req: Request, res: Response) => {
+    const developerId = req.parsedId;
+
+    try {
+      const developerProjects = await database.getDeveloperProjects(
+        developerId
+      );
+
+      return res.status(200).send(developerProjects);
+    } catch (error) {
+      const errorMessage: iMessage = {
+        message: "Failed to get developer's projects data in the database",
+      };
+
+      const errorObject = error as Error;
+
+      console.error(errorObject.stack);
+
+      return res.status(500).send(errorMessage);
+    }
+  };
+
   export const deleteDeveloper = async (req: Request, res: Response) => {
     try {
-      await database.deleteData(
-        "developers",
-        "id",
-        req.parsedId
-      );
+      await database.deleteData("developers", "id", req.parsedId);
 
       return res.status(204).send();
     } catch (error) {
       const errorMessage: iMessage = {
         message: "Failed to delete developer from the database",
+      };
+
+      const errorObject = error as Error;
+
+      console.error(errorObject.stack);
+
+      return res.status(500).send(errorMessage);
+    }
+  };
+
+  export const deleteProject = async (req: Request, res: Response) => {
+    try {
+      await database.deleteData("projects", "id", req.parsedId);
+
+      return res.status(204).send();
+    } catch (error) {
+      const errorMessage: iMessage = {
+        message: "Failed to delete project from the database",
       };
 
       const errorObject = error as Error;
