@@ -1,4 +1,4 @@
-import { iDeveloperJoinDeveloperInfo } from "./../interfaces";
+import { iDeveloperJoinDeveloperInfo, iProjectJoinTechnologies } from "./../interfaces";
 import { Request, Response } from "express";
 import { database } from "../database";
 import { iMessage } from "../interfaces";
@@ -108,6 +108,29 @@ export namespace requests {
     } catch (error) {
       const errorMessage: iMessage = {
         message: "Failed to get developers data in the database",
+      };
+
+      const errorObject = error as Error;
+
+      console.error(errorObject.stack);
+
+      return res.status(500).send(errorMessage);
+    }
+  };
+
+  export const getProjects = async (req: Request, res: Response) => {
+    const projectId = req.parsedId;
+    const hasId = projectId || projectId === 0;
+
+    try {
+      const allProjectsList: iProjectJoinTechnologies[] = hasId
+        ? await database.getProjects(projectId)
+        : await database.getProjects();
+
+      return res.status(200).send(allProjectsList);
+    } catch (error) {
+      const errorMessage: iMessage = {
+        message: "Failed to get projects data in the database",
       };
 
       const errorObject = error as Error;
