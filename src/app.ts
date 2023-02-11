@@ -22,14 +22,19 @@ api.post(
   middlewares.checkCreateDeveloperInfoKeys,
   middlewares.storeDeveloperInfoOnlyWithRightKeys,
   middlewares.checkPreferredOs,
-  middlewares.checkDateFormat,
+  middlewares.checkDeveloperDateFormat,
   middlewares.parseId,
   middlewares.checkIfDeveloperExists,
   middlewares.checkIfDeveloperHasInfo,
   requests.createDeveloperInfos
 );
 
-api.post("/projects", middlewares.checkProjectKeys, middlewares.checkProjectTypes);
+api.post(
+  "/projects",
+  middlewares.checkProjectKeys,
+  middlewares.checkProjectTypes,
+  middlewares.storeProjectOnlyWithRightKeys
+);
 
 api.patch(
   "/developers/:id",
@@ -49,7 +54,7 @@ api.patch(
   middlewares.checkEmptyDeveloperInfoKeys,
   middlewares.storeDeveloperInfoOnlyWithRightKeys,
   middlewares.checkPreferredOs,
-  middlewares.checkDateFormat,
+  middlewares.checkDeveloperDateFormat,
   middlewares.checkIfDeveloperHasInfo,
   requests.updateDeveloperInfo
 );

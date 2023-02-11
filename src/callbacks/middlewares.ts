@@ -1,4 +1,3 @@
-import { storeDeveloperInfoOnlyWithRightKeys } from "./middlewares";
 import {
   iDeveloper,
   iDeveloperInfo,
@@ -287,10 +286,11 @@ export namespace middlewares {
   export const checkDateFormat = (
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
+    dateProperty: string
   ) => {
     const dateRegex = /^\d{4}\/\d{2}\/\d{2}$/;
-    const hasRightDateFormat = dateRegex.test(req.body.developer_since);
+    const hasRightDateFormat = dateRegex.test(req.body[dateProperty]);
 
     if (!hasRightDateFormat) {
       const errorMessage: iMessage = {
@@ -300,9 +300,29 @@ export namespace middlewares {
       return res.status(400).send(errorMessage);
     }
 
-    req.body.developer_since = new Date(req.body.developer_since);
+    req.body[dateProperty] = new Date(req.body[dateProperty]);
 
     next();
+  };
+
+  export const checkDeveloperDateFormat = (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    checkDateFormat(req, res, next, "developer_since");
+  };
+
+  export const checkProjectDateFormat = (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    checkDateFormat(req, res, next, "start_date");
+
+    if (req.body.end_date) {
+      checkDateFormat(req, res, next, "end_date");
+    }
   };
 
   export const checkPreferredOs = (
