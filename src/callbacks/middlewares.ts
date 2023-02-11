@@ -356,6 +356,8 @@ export namespace middlewares {
   ) => {
     if (req.body.end_date) {
       checkDateFormat(req, res, next, "end_date");
+    } else {
+      next();
     }
   };
 
