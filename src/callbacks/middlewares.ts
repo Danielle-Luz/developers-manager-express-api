@@ -1,3 +1,4 @@
+import { storeDeveloperInfoOnlyWithRightKeys } from "./middlewares";
 import {
   iDeveloper,
   iDeveloperInfo,
@@ -203,7 +204,7 @@ export namespace middlewares {
   const storeDataOnlyWithRightKeys = (
     req: Request,
     next: NextFunction,
-    dataWithRightKeys: iDeveloper | iDeveloperInfo,
+    dataWithRightKeys: iDeveloper | iDeveloperInfo | iProject,
     rightKeys: string[]
   ) => {
     const { body: newData } = req;
@@ -231,6 +232,21 @@ export namespace middlewares {
       next,
       developerOnlyWithRightKeys,
       developerModelKeys
+    );
+  };
+
+  export const storeProjectOnlyWithRightKeys = (
+    req: Request,
+    _: Response,
+    next: NextFunction
+  ) => {
+    const projecOnlytWithRightKeys: iProject = { ...projectModel };
+
+    storeDataOnlyWithRightKeys(
+      req,
+      next,
+      projecOnlytWithRightKeys,
+      projectModelKeys
     );
   };
 
