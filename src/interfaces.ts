@@ -63,6 +63,8 @@ export interface iProjectJoinTechnologies {
   technology_name: string | null;
 }
 
+export type tDeveloperProjects = iDeveloperJoinDeveloperInfo & iProjectJoinTechnologies;
+
 export interface iId {
   developer_info_id?: number | undefined;
   developer_id?: number | undefined;

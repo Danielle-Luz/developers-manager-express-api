@@ -7,6 +7,7 @@ import {
   iDeveloperJoinDeveloperInfo,
   iId,
   iProjectJoinTechnologies,
+  tDeveloperProjects,
 } from "./interfaces";
 import "dotenv/config";
 
@@ -185,7 +186,7 @@ export namespace database {
 
     queryString = format(queryString, developerId);
 
-    const queryResult: QueryResult<iProjectJoinTechnologies> =
+    const queryResult: QueryResult<tDeveloperProjects> =
       await connection.query(queryString);
 
     return queryResult.rows;
