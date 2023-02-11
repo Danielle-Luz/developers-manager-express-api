@@ -31,6 +31,15 @@ export namespace requests {
     await createRegister(req, res, "developers");
   };
 
+  export const insertTechnologyInProject = async (
+    req: Request,
+    res: Response
+  ) => {
+    req.body = { project_id: req.parsedId, technology_id: req.technologyId };
+
+    await createRegister(req, res, "projects_technologies");
+  };
+
   export const createDeveloperInfos = async (req: Request, res: Response) => {
     const { body: newDeveloperInfo } = req;
     const developerId = req.parsedId;

@@ -31,6 +31,7 @@ export namespace middlewares {
 
   const technologyModel: iTechnology = {
     name: "",
+    added_in: new Date("2023/01/10"),
   };
 
   const developerModelKeys = Object.keys(developerModel);
@@ -149,7 +150,7 @@ export namespace middlewares {
     req: Request,
     res: Response,
     next: NextFunction,
-    model: iDeveloperInfo | iDeveloper | iProject
+    model: iDeveloperInfo | iDeveloper | iProject | iTechnology
   ) => {
     const { body: newData } = req;
 
@@ -406,6 +407,14 @@ export namespace middlewares {
     } else {
       next();
     }
+  };
+
+  export const checkTechnologyDateFormat = (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    checkDateFormat(req, res, next, "added_in");
   };
 
   export const checkPreferredOs = (

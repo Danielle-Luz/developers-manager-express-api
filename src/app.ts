@@ -43,6 +43,7 @@ api.post(
 api.post(
   "/projects/:id/technologies",
   middlewares.checkTechnologiesKeys,
+  middlewares.checkTechnologyDateFormat,
   middlewares.storeTechnologiesOnlyWithRightKeys,
   middlewares.checkTechnologiesTypes,
   middlewares.checkTechnologyName,

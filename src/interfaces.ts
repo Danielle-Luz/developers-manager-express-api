@@ -66,7 +66,8 @@ export interface iProjectJoinTechnologies {
 export interface iTechnology {
   id?: number;
 	name: string;
-  [key: string]: number | string;
+  added_in: Date;
+  [key: string]: number | string | Date;
 }
 
 export interface iId {
