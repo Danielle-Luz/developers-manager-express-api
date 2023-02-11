@@ -42,9 +42,10 @@ api.post(
 
 api.post(
   "/projects/:id/technologies",
+  middlewares.parseId,
   middlewares.checkTechnologiesKeys,
-  middlewares.checkTechnologyDateFormat,
   middlewares.storeTechnologiesOnlyWithRightKeys,
+  middlewares.checkTechnologyDateFormat,
   middlewares.checkTechnologiesTypes,
   middlewares.checkTechnologyName,
   middlewares.checkIfProjectExists,

@@ -35,8 +35,12 @@ export namespace requests {
     req: Request,
     res: Response
   ) => {
-    req.body = { project_id: req.parsedId, technology_id: req.technologyId };
-
+    req.body = {
+      project_id: req.parsedId,
+      technology_id: req.technologyId,
+      added_in: req.body.added_in,
+    };
+    
     await createRegister(req, res, "projects_technologies");
   };
 
