@@ -1,4 +1,10 @@
-import { iDeveloper, iDeveloperInfo, iMessage, iProject, os } from "./../interfaces";
+import {
+  iDeveloper,
+  iDeveloperInfo,
+  iMessage,
+  iProject,
+  os,
+} from "./../interfaces";
 import { NextFunction, Request, Response } from "express";
 import { database } from "../database";
 
@@ -19,11 +25,12 @@ export namespace middlewares {
     estimated_time: "",
     repository: "",
     start_date: new Date("2023/01/10"),
-    developer_id: 0
-  }
+    developer_id: 0,
+  };
 
   const developerModelKeys = Object.keys(developerModel);
   const developerInfoModelKeys = Object.keys(developerInfoModel);
+  const projectModelKeys = Object.keys(projectModel);
 
   const checkKeys = (
     req: Request,
@@ -69,6 +76,14 @@ export namespace middlewares {
     next: NextFunction
   ) => {
     checkKeys(req, res, next, developerInfoModelKeys);
+  };
+
+  export const checkProjectKeys = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    checkKeys(req, res, next, projectModelKeys);
   };
 
   export const checkEmptyKeys = (
