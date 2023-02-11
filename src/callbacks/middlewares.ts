@@ -518,15 +518,22 @@ export namespace middlewares {
     res: Response,
     next: NextFunction
   ) => {
-    const { body: insertedTechnology } = req;
+    const { body, params } = req;
+    let insertedTechnology: string;
+
+    if (params.name) {
+      insertedTechnology = params.name;
+    } else {
+      insertedTechnology = body.name;
+    }
 
     const availablesTechnologies = (await database.getTechnologies()).map(
       (technology) => technology.name.toLowerCase()
     );
 
-    if (
-      !availablesTechnologies.includes(insertedTechnology.name.toLowerCase())
-    ) {
+    req.availablesTechnologies = availablesTechnologies;
+
+    if (!availablesTechnologies.includes(insertedTechnology.toLowerCase())) {
       const errorMessage: iMessage = {
         message: `Insert one of these technologies: ${availablesTechnologies.join(
           ", "
@@ -536,11 +543,37 @@ export namespace middlewares {
       return res.status(400).send(errorMessage);
     }
 
-    const foundTechnology = await database.getTechnologies(
-      insertedTechnology.name
-    );
+    const foundTechnology = await database.getTechnologies(insertedTechnology);
 
     req.technologyId = foundTechnology[0].id;
+
+    next();
+  };
+
+  export const checkIfProjectHasTechnology = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    const hasTechnology =
+      (
+        await database.getProjectsTechnologiesWithIds(
+          req.parsedId,
+          req.technologyId
+        )
+      ).length > 0;
+
+    const errorMessage: iMessage = { message: "" };
+
+    if (req.method === "POST" && hasTechnology) {
+      errorMessage.message = "Project already has the technology";
+
+      return res.status(409).send(errorMessage);
+    } else if (req.method === "DELETE" && !hasTechnology) {
+      errorMessage.message = "Project doesn't hava the deleted technology";
+
+      return res.status(400).send(errorMessage);
+    }
 
     next();
   };

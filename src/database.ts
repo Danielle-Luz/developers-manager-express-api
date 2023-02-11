@@ -205,10 +205,29 @@ export namespace database {
       queryString = format(queryString, technologyName);
     }
 
-    const queryResult: QueryResult<iTechnology> = await connection.query(queryString);
+    const queryResult: QueryResult<iTechnology> = await connection.query(
+      queryString
+    );
 
     return queryResult.rows;
-  }
+  };
+
+  export const getProjectsTechnologiesWithIds = async (
+    projectId: number,
+    technologyId: number | undefined
+  ) => {
+    const queryString = `
+    SELECT id
+    FROM projects_technologies
+    WHERE project_id = %L AND technology_id = %L;
+    `;
+
+    const queryResult: QueryResult<iId> = await connection.query(
+      format(queryString, projectId, technologyId)
+    );
+
+    return queryResult.rows;
+  };
 
   export const deleteData = async (
     table: string,

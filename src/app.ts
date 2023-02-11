@@ -126,6 +126,14 @@ api.delete(
   requests.deleteProject
 );
 
+api.delete(
+  "/projects/:id/technologies/:name",
+  middlewares.parseId,
+  middlewares.checkIfProjectExists,
+  middlewares.checkTechnologyName,
+  requests.deleteProject
+);
+
 api.listen(3000, async () => {
   await database.connection.connect();
 
