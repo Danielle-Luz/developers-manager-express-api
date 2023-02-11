@@ -77,6 +77,7 @@ api.get("/projects", requests.getProjects);
 api.get(
   "/projects/:id",
   middlewares.parseId,
+  middlewares.checkIfProjectExists,
   requests.getProjects
 );
 
@@ -85,6 +86,13 @@ api.delete(
   middlewares.parseId,
   middlewares.checkIfDeveloperExists,
   requests.deleteDeveloper
+);
+
+api.delete(
+  "/projects/:id",
+  middlewares.parseId,
+  middlewares.checkIfProjectExists,
+  requests.deleteProject
 );
 
 api.listen(3000, async () => {

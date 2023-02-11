@@ -432,4 +432,24 @@ export namespace middlewares {
 
     next();
   };
+
+  export const checkIfProjectExists = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    const projectId = req.parsedId;
+
+    const foundProject = await database.getProjects(projectId);
+
+    if (foundProject.length === 0) {
+      const errorMessage: iMessage = {
+        message: "Project not found.",
+      };
+
+      return res.status(404).send(errorMessage);
+    }
+
+    next();
+  };
 }
