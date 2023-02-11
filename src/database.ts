@@ -156,12 +156,12 @@ export namespace database {
   export const getDeveloperProjects = async (developerId: number) => {
     let queryString = `
     SELECT
+    d.id AS "developerID",
+    d."name" AS "developerName",
+    email AS "developerEmail",
     di.id AS "developerInfoID", 
     developer_since AS "developerInfoDeveloperSince",
     preferred_os AS "developerInfoPreferredOS",
-    d.id AS "developerID",
-    d."name" AS "developerName",
-    email AS "developerEmail"
     p.id as "projectID",
     p.name as "projectName",
     p.description as "projectDescription",

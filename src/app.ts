@@ -93,6 +93,13 @@ api.get(
   requests.getProjects
 );
 
+api.get(
+  "/developers/:id/projects",
+  middlewares.parseId,
+  middlewares.checkIfDeveloperExists,
+  requests.getDeveloperProjects
+);
+
 api.delete(
   "/developers/:id",
   middlewares.parseId,
