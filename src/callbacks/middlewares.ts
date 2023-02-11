@@ -170,6 +170,14 @@ export namespace middlewares {
     checkTypes(req, res, next, developerInfoModel);
   };
 
+  export const checkProjectTypes = (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    checkTypes(req, req, next, projectModel);
+  };
+
   export const checkNotUniqueEmail = async (
     req: Request,
     res: Response,
