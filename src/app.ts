@@ -16,6 +16,7 @@ api.post(
   middlewares.checkNotUniqueEmail,
   requests.createDeveloper
 );
+
 api.post(
   "/developers/:id/infos",
   middlewares.checkCreateDeveloperInfoKeys,
@@ -28,6 +29,8 @@ api.post(
   requests.createDeveloperInfos
 );
 
+api.post("/projects", middlewares.checkProjectKeys, middlewares.checkProjectTypes);
+
 api.patch(
   "/developers/:id",
   middlewares.parseId,
@@ -38,6 +41,7 @@ api.patch(
   middlewares.checkNotUniqueEmail,
   requests.updateDeveloper
 );
+
 api.patch(
   "/developers/:id/infos",
   middlewares.parseId,
@@ -51,6 +55,7 @@ api.patch(
 );
 
 api.get("/developers", requests.getDevelopers);
+
 api.get(
   "/developers/:id",
   middlewares.parseId,

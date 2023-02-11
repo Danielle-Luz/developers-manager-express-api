@@ -32,8 +32,9 @@ export interface iProject {
 	estimated_time: string;
 	repository: string;
 	start_date: Date;
-	end_date?: Date;
+	end_date?: Date | null;
 	developer_id: number;
+  [key: string]: string | number | Date | null;
 }
 
 export interface iId {

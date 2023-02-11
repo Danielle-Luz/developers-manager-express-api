@@ -127,7 +127,7 @@ export namespace middlewares {
     req: Request,
     res: Response,
     next: NextFunction,
-    model: iDeveloperInfo | iDeveloper
+    model: iDeveloperInfo | iDeveloper | iProject
   ) => {
     const { body: newData } = req;
 
@@ -175,7 +175,7 @@ export namespace middlewares {
     res: Response,
     next: NextFunction
   ) => {
-    checkTypes(req, req, next, projectModel);
+    checkTypes(req, res, next, projectModel);
   };
 
   export const checkNotUniqueEmail = async (
