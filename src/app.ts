@@ -32,8 +32,10 @@ api.post(
 api.post(
   "/projects",
   middlewares.checkProjectKeys,
+  middlewares.checkProjectDateFormat,
   middlewares.checkProjectTypes,
-  middlewares.storeProjectOnlyWithRightKeys
+  middlewares.storeBodyDeveloperId,
+  middlewares.storeProjectOnlyWithRightKeys,
 );
 
 api.patch(

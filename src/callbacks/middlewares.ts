@@ -249,6 +249,24 @@ export namespace middlewares {
     );
   };
 
+  export const storeDeveloperInfoOnlyWithRightKeys = (
+    req: Request,
+    _: Response,
+    next: NextFunction
+  ) => {
+    const developerInfoOnlyWithRightKeys: iDeveloperInfo = {
+      developer_since: new Date("2023/01/10"),
+      preferred_os: "",
+    };
+
+    storeDataOnlyWithRightKeys(
+      req,
+      next,
+      developerInfoOnlyWithRightKeys,
+      developerInfoModelKeys
+    );
+  };
+
   export const checkIfDeveloperHasInfo = async (
     req: Request,
     res: Response,
@@ -356,29 +374,23 @@ export namespace middlewares {
     next();
   };
 
-  export const storeDeveloperInfoOnlyWithRightKeys = (
-    req: Request,
-    _: Response,
-    next: NextFunction
-  ) => {
-    const developerInfoOnlyWithRightKeys: iDeveloperInfo = {
-      developer_since: new Date("2023/01/10"),
-      preferred_os: "",
-    };
-
-    storeDataOnlyWithRightKeys(
-      req,
-      next,
-      developerInfoOnlyWithRightKeys,
-      developerInfoModelKeys
-    );
-  };
-
   export const parseId = (req: Request, _: Response, next: NextFunction) => {
     const developerId = parseInt(req.params.id);
     req.parsedId = isNaN(developerId) ? -1 : developerId;
 
     next();
+  };
+
+  export const storeBodyDeveloperId = (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    const developerId = req.body.developer_id;
+
+    req.parsedId = developerId;
+
+    checkIfDeveloperExists(req, res, next);
   };
 
   export const checkIfDeveloperExists = async (
