@@ -52,6 +52,18 @@ api.patch(
 );
 
 api.patch(
+  "/projects/:id",
+  middlewares.checkEmptyProjectKeys,
+  middlewares.storeBodyDeveloperId,
+  middlewares.parseId,
+  middlewares.checkProjectStartDateFormat,
+  middlewares.checkProjectEndDateFormat,
+  middlewares.storeProjectOnlyWithRightKeys,
+  middlewares.checkProjectTypes,
+  requests.updateProject
+);
+
+api.patch(
   "/developers/:id/infos",
   middlewares.parseId,
   middlewares.checkIfDeveloperExists,

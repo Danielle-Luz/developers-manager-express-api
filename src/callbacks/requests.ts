@@ -98,6 +98,10 @@ export namespace requests {
     return await updateData(req, res, "developer_infos");
   };
 
+  export const updateProject = async (req: Request, res: Response) => {
+    return await updateData(req, res, "projects");
+  };
+
   export const getDevelopers = async (req: Request, res: Response) => {
     const developerId = req.parsedId;
     const hasId = developerId || developerId === 0;

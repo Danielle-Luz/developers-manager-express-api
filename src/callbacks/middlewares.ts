@@ -123,6 +123,14 @@ export namespace middlewares {
     checkEmptyKeys(req, res, next, developerInfoModelKeys);
   };
 
+  export const checkEmptyProjectKeys = (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    checkEmptyKeys(req, res, next, [...projectModelKeys, "end_date"]);
+  };
+
   const checkTypes = (
     req: Request,
     res: Response,
@@ -209,7 +217,7 @@ export namespace middlewares {
   const storeDataOnlyWithRightKeys = (
     req: Request,
     next: NextFunction,
-    dataWithRightKeys: iDeveloper | iDeveloperInfo | iProject,
+    dataWithRightKeys: iDeveloper | iDeveloperInfo | Partial<iProject>,
     rightKeys: string[]
   ) => {
     const { body: newData } = req;
@@ -245,17 +253,13 @@ export namespace middlewares {
     _: Response,
     next: NextFunction
   ) => {
-    const projectOnlytWithRightKeys: iProject = { ...projectModel };
-
-    if (req.body.end_date) {
-      projectOnlytWithRightKeys.end_date = new Date("2023/10/01");
-    }
+    const projectOnlytWithRightKeys: Partial<iProject> = {};
 
     storeDataOnlyWithRightKeys(
       req,
       next,
       projectOnlytWithRightKeys,
-      projectModelKeys
+      [...projectModelKeys, "end_date"]
     );
   };
 
@@ -346,7 +350,11 @@ export namespace middlewares {
     res: Response,
     next: NextFunction
   ) => {
-    checkDateFormat(req, res, next, "start_date");
+    if (req.body.start_date) {
+      checkDateFormat(req, res, next, "start_date");
+    } else {
+      next();
+    }
   };
 
   export const checkProjectEndDateFormat = (
@@ -406,9 +414,13 @@ export namespace middlewares {
   ) => {
     const developerId = req.body.developer_id;
 
-    req.parsedId = developerId;
+    if (developerId) {
+      req.parsedId = developerId;
 
-    checkIfDeveloperExists(req, res, next);
+      checkIfDeveloperExists(req, res, next);
+    } else {
+      next();
+    }
   };
 
   export const checkIfDeveloperExists = async (
