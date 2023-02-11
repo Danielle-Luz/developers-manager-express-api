@@ -255,12 +255,10 @@ export namespace middlewares {
   ) => {
     const projectOnlytWithRightKeys: Partial<iProject> = {};
 
-    storeDataOnlyWithRightKeys(
-      req,
-      next,
-      projectOnlytWithRightKeys,
-      [...projectModelKeys, "end_date"]
-    );
+    storeDataOnlyWithRightKeys(req, next, projectOnlytWithRightKeys, [
+      ...projectModelKeys,
+      "end_date",
+    ]);
   };
 
   export const storeDeveloperInfoOnlyWithRightKeys = (
@@ -461,6 +459,36 @@ export namespace middlewares {
 
       return res.status(404).send(errorMessage);
     }
+
+    next();
+  };
+
+  export const checkTechnologyName = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    const { body: insertedTechnology } = req;
+
+    const availablesTechnologies = (await database.getTechnologies()).map(
+      (technology) => technology.name.toLowerCase()
+    );
+
+    if (
+      !availablesTechnologies.includes(insertedTechnology.name.toLowerCase())
+    ) {
+      const errorMessage: iMessage = {
+        message: `Insert one of these technologies: ${availablesTechnologies.join(
+          ", "
+        )}`,
+      };
+
+      return res.status(400).send(errorMessage);
+    }
+
+    const foundTechnology = await database.getTechnologies(insertedTechnology.name);
+
+    req.technologyId = foundTechnology[0].id;
 
     next();
   };
