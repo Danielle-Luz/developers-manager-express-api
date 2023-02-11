@@ -200,7 +200,7 @@ export namespace database {
     `;
 
     if (technologyName) {
-      queryString += 'WHERE "name" = %L';
+      queryString += 'WHERE LOWER("name") = LOWER(%L)';
 
       queryString = format(queryString, technologyName);
     }

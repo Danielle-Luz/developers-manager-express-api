@@ -66,6 +66,7 @@ export interface iProjectJoinTechnologies {
 export interface iTechnology {
   id?: number;
 	name: string;
+  [key: string]: number | string;
 }
 
 export interface iId {

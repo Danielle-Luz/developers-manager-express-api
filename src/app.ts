@@ -40,6 +40,16 @@ api.post(
   requests.createProject
 );
 
+api.post(
+  "/projects/:id/technologies",
+  middlewares.checkTechnologiesKeys,
+  middlewares.storeTechnologiesOnlyWithRightKeys,
+  middlewares.checkTechnologiesTypes,
+  middlewares.checkTechnologyName,
+  middlewares.checkIfProjectExists,
+  requests.insertTechnologyInProject
+);
+
 api.patch(
   "/developers/:id",
   middlewares.parseId,

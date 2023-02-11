@@ -3,6 +3,7 @@ import {
   iDeveloperInfo,
   iMessage,
   iProject,
+  iTechnology,
   os,
 } from "./../interfaces";
 import { NextFunction, Request, Response } from "express";
@@ -28,9 +29,14 @@ export namespace middlewares {
     developer_id: 0,
   };
 
+  const technologyModel: iTechnology = {
+    name: "",
+  };
+
   const developerModelKeys = Object.keys(developerModel);
   const developerInfoModelKeys = Object.keys(developerInfoModel);
   const projectModelKeys = Object.keys(projectModel);
+  const technologyModelKeys = Object.keys(technologyModel);
 
   const checkKeys = (
     req: Request,
@@ -84,6 +90,14 @@ export namespace middlewares {
     next: NextFunction
   ) => {
     checkKeys(req, res, next, projectModelKeys);
+  };
+
+  export const checkTechnologiesKeys = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    checkKeys(req, res, next, technologyModelKeys);
   };
 
   export const checkEmptyKeys = (
@@ -217,7 +231,7 @@ export namespace middlewares {
   const storeDataOnlyWithRightKeys = (
     req: Request,
     next: NextFunction,
-    dataWithRightKeys: iDeveloper | iDeveloperInfo | Partial<iProject>,
+    dataWithRightKeys: iDeveloper | iDeveloperInfo | Partial<iProject> | Partial<iTechnology>,
     rightKeys: string[]
   ) => {
     const { body: newData } = req;
@@ -276,6 +290,21 @@ export namespace middlewares {
       next,
       developerInfoOnlyWithRightKeys,
       developerInfoModelKeys
+    );
+  };
+
+  export const storeTechnologiesOnlyWithRightKeys = (
+    req: Request,
+    _: Response,
+    next: NextFunction
+  ) => {
+    const technologiesOnlyWithRightKeys: Partial<iTechnology> = {};
+
+    storeDataOnlyWithRightKeys(
+      req,
+      next,
+      technologiesOnlyWithRightKeys,
+      technologyModelKeys
     );
   };
 
@@ -486,7 +515,9 @@ export namespace middlewares {
       return res.status(400).send(errorMessage);
     }
 
-    const foundTechnology = await database.getTechnologies(insertedTechnology.name);
+    const foundTechnology = await database.getTechnologies(
+      insertedTechnology.name
+    );
 
     req.technologyId = foundTechnology[0].id;
 
