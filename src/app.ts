@@ -72,6 +72,14 @@ api.get(
   requests.getDevelopers
 );
 
+api.get("/projects", requests.getProjects);
+
+api.get(
+  "/projects/:id",
+  middlewares.parseId,
+  requests.getProjects
+);
+
 api.delete(
   "/developers/:id",
   middlewares.parseId,

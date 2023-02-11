@@ -1,4 +1,7 @@
-import { iDeveloperJoinDeveloperInfo, iProjectJoinTechnologies } from "./../interfaces";
+import {
+  iDeveloperJoinDeveloperInfo,
+  iProjectJoinTechnologies,
+} from "./../interfaces";
 import { Request, Response } from "express";
 import { database } from "../database";
 import { iMessage } from "../interfaces";
@@ -127,6 +130,14 @@ export namespace requests {
         ? await database.getProjects(projectId)
         : await database.getProjects();
 
+      if (hasId && allProjectsList.length === 0) {
+        const errorMessage: iMessage = {
+          message: "Project not found.",
+        };
+
+        return res.status(404).send(errorMessage);
+      }
+      
       return res.status(200).send(allProjectsList);
     } catch (error) {
       const errorMessage: iMessage = {
