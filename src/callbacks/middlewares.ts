@@ -206,6 +206,14 @@ export namespace middlewares {
     checkTypes(req, res, next, projectModelWithEndDate);
   };
 
+  export const checkTechnologiesTypes = (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    checkTypes(req, res, next, technologyModel);
+  };
+
   export const checkNotUniqueEmail = async (
     req: Request,
     res: Response,
@@ -231,7 +239,11 @@ export namespace middlewares {
   const storeDataOnlyWithRightKeys = (
     req: Request,
     next: NextFunction,
-    dataWithRightKeys: iDeveloper | iDeveloperInfo | Partial<iProject> | Partial<iTechnology>,
+    dataWithRightKeys:
+      | iDeveloper
+      | iDeveloperInfo
+      | Partial<iProject>
+      | Partial<iTechnology>,
     rightKeys: string[]
   ) => {
     const { body: newData } = req;
