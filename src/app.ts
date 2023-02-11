@@ -36,6 +36,7 @@ api.post(
   middlewares.checkProjectTypes,
   middlewares.storeBodyDeveloperId,
   middlewares.storeProjectOnlyWithRightKeys,
+  requests.createProject
 );
 
 api.patch(

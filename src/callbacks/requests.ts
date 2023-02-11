@@ -52,6 +52,10 @@ export namespace requests {
     }
   };
 
+  export const createProject = async (req: Request, res: Response) => {
+    await createRegister(req, res, "projects");
+  };
+
   export const updateData = async (
     req: Request,
     res: Response,
@@ -116,11 +120,7 @@ export namespace requests {
 
   export const deleteDeveloper = async (req: Request, res: Response) => {
     try {
-      await database.deleteData(
-        "developers",
-        "id",
-        req.parsedId
-      );
+      await database.deleteData("developers", "id", req.parsedId);
 
       return res.status(204).send();
     } catch (error) {
