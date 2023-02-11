@@ -31,6 +31,19 @@ export namespace requests {
     await createRegister(req, res, "developers");
   };
 
+  export const insertTechnologyInProject = async (
+    req: Request,
+    res: Response
+  ) => {
+    req.body = {
+      project_id: req.parsedId,
+      technology_id: req.technologyId,
+      added_in: req.body.added_in,
+    };
+
+    await createRegister(req, res, "projects_technologies");
+  };
+
   export const createDeveloperInfos = async (req: Request, res: Response) => {
     const { body: newDeveloperInfo } = req;
     const developerId = req.parsedId;
@@ -196,6 +209,32 @@ export namespace requests {
     } catch (error) {
       const errorMessage: iMessage = {
         message: "Failed to delete project from the database",
+      };
+
+      const errorObject = error as Error;
+
+      console.error(errorObject.stack);
+
+      return res.status(500).send(errorMessage);
+    }
+  };
+
+  export const deleteProjectTechnology = async (
+    req: Request,
+    res: Response
+  ) => {
+    try {
+      await database.deleteData(
+        "projects_technologies",
+        "id",
+        req.projectTechnologyId
+      );
+
+      return res.status(204).send();
+    } catch (error) {
+      const errorMessage: iMessage = {
+        message:
+          "Failed to delete project-technology relation from the database",
       };
 
       const errorObject = error as Error;

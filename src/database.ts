@@ -7,6 +7,7 @@ import {
   iDeveloperJoinDeveloperInfo,
   iId,
   iProjectJoinTechnologies,
+  iTechnology,
   tDeveloperProjects,
 } from "./interfaces";
 import "dotenv/config";
@@ -193,10 +194,45 @@ export namespace database {
     return queryResult.rows;
   };
 
+  export const getTechnologies = async (technologyName?: string) => {
+    let queryString = `
+    SELECT * FROM technologies
+    `;
+
+    if (technologyName) {
+      queryString += 'WHERE LOWER("name") = LOWER(%L)';
+
+      queryString = format(queryString, technologyName);
+    }
+
+    const queryResult: QueryResult<iTechnology> = await connection.query(
+      queryString
+    );
+
+    return queryResult.rows;
+  };
+
+  export const getProjectsTechnologiesWithIds = async (
+    projectId: number,
+    technologyId: number | undefined
+  ) => {
+    const queryString = `
+    SELECT id
+    FROM projects_technologies
+    WHERE project_id = %L AND technology_id = %L;
+    `;
+
+    const queryResult: QueryResult<iId> = await connection.query(
+      format(queryString, projectId, technologyId)
+    );
+
+    return queryResult.rows;
+  };
+
   export const deleteData = async (
     table: string,
     deletedColumn: string,
-    deletedDataId: number
+    deletedDataId: number | undefined
   ) => {
     const queryString = `
     DELETE FROM %I

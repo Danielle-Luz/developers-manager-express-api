@@ -7,6 +7,9 @@ declare global {
       parsedId: number;
       foundDeveloper: iDeveloperJoinDeveloperInfo;
       developerInfoId: number;
+      technologyId: number | undefined;
+      availablesTechnologies: string[];
+      projectTechnologyId: number | undefined;
     }
   }
 }

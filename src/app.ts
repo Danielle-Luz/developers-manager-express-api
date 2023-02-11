@@ -40,6 +40,19 @@ api.post(
   requests.createProject
 );
 
+api.post(
+  "/projects/:id/technologies",
+  middlewares.parseId,
+  middlewares.checkTechnologiesKeys,
+  middlewares.storeTechnologiesOnlyWithRightKeys,
+  middlewares.checkTechnologyDateFormat,
+  middlewares.checkTechnologiesTypes,
+  middlewares.checkTechnologyName,
+  middlewares.checkIfProjectExists,
+  middlewares.checkIfProjectHasTechnology,
+  requests.insertTechnologyInProject
+);
+
 api.patch(
   "/developers/:id",
   middlewares.parseId,
@@ -112,6 +125,15 @@ api.delete(
   middlewares.parseId,
   middlewares.checkIfProjectExists,
   requests.deleteProject
+);
+
+api.delete(
+  "/projects/:id/technologies/:name",
+  middlewares.parseId,
+  middlewares.checkIfProjectExists,
+  middlewares.checkTechnologyName,
+  middlewares.checkIfProjectHasTechnology,
+  requests.deleteProjectTechnology
 );
 
 api.listen(3000, async () => {

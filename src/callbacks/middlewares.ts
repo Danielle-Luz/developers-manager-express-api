@@ -3,6 +3,7 @@ import {
   iDeveloperInfo,
   iMessage,
   iProject,
+  iTechnology,
   os,
 } from "./../interfaces";
 import { NextFunction, Request, Response } from "express";
@@ -28,9 +29,15 @@ export namespace middlewares {
     developer_id: 0,
   };
 
+  const technologyModel: iTechnology = {
+    name: "",
+    added_in: new Date("2023/01/10"),
+  };
+
   const developerModelKeys = Object.keys(developerModel);
   const developerInfoModelKeys = Object.keys(developerInfoModel);
   const projectModelKeys = Object.keys(projectModel);
+  const technologyModelKeys = Object.keys(technologyModel);
 
   const checkKeys = (
     req: Request,
@@ -86,6 +93,14 @@ export namespace middlewares {
     checkKeys(req, res, next, projectModelKeys);
   };
 
+  export const checkTechnologiesKeys = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    checkKeys(req, res, next, technologyModelKeys);
+  };
+
   export const checkEmptyKeys = (
     req: Request,
     res: Response,
@@ -135,7 +150,7 @@ export namespace middlewares {
     req: Request,
     res: Response,
     next: NextFunction,
-    model: iDeveloperInfo | iDeveloper | iProject
+    model: iDeveloperInfo | iDeveloper | iProject | iTechnology
   ) => {
     const { body: newData } = req;
 
@@ -192,6 +207,14 @@ export namespace middlewares {
     checkTypes(req, res, next, projectModelWithEndDate);
   };
 
+  export const checkTechnologiesTypes = (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    checkTypes(req, res, next, technologyModel);
+  };
+
   export const checkNotUniqueEmail = async (
     req: Request,
     res: Response,
@@ -217,7 +240,11 @@ export namespace middlewares {
   const storeDataOnlyWithRightKeys = (
     req: Request,
     next: NextFunction,
-    dataWithRightKeys: iDeveloper | iDeveloperInfo | Partial<iProject>,
+    dataWithRightKeys:
+      | iDeveloper
+      | iDeveloperInfo
+      | Partial<iProject>
+      | Partial<iTechnology>,
     rightKeys: string[]
   ) => {
     const { body: newData } = req;
@@ -255,12 +282,10 @@ export namespace middlewares {
   ) => {
     const projectOnlytWithRightKeys: Partial<iProject> = {};
 
-    storeDataOnlyWithRightKeys(
-      req,
-      next,
-      projectOnlytWithRightKeys,
-      [...projectModelKeys, "end_date"]
-    );
+    storeDataOnlyWithRightKeys(req, next, projectOnlytWithRightKeys, [
+      ...projectModelKeys,
+      "end_date",
+    ]);
   };
 
   export const storeDeveloperInfoOnlyWithRightKeys = (
@@ -278,6 +303,21 @@ export namespace middlewares {
       next,
       developerInfoOnlyWithRightKeys,
       developerInfoModelKeys
+    );
+  };
+
+  export const storeTechnologiesOnlyWithRightKeys = (
+    req: Request,
+    _: Response,
+    next: NextFunction
+  ) => {
+    const technologiesOnlyWithRightKeys: Partial<iTechnology> = {};
+
+    storeDataOnlyWithRightKeys(
+      req,
+      next,
+      technologiesOnlyWithRightKeys,
+      technologyModelKeys
     );
   };
 
@@ -367,6 +407,14 @@ export namespace middlewares {
     } else {
       next();
     }
+  };
+
+  export const checkTechnologyDateFormat = (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    checkDateFormat(req, res, next, "added_in");
   };
 
   export const checkPreferredOs = (
@@ -460,6 +508,73 @@ export namespace middlewares {
       };
 
       return res.status(404).send(errorMessage);
+    }
+
+    next();
+  };
+
+  export const checkTechnologyName = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    const { body, params } = req;
+    let insertedTechnology: string;
+
+    if (params.name) {
+      insertedTechnology = params.name;
+    } else {
+      insertedTechnology = body.name;
+    }
+
+    const availablesTechnologies = (await database.getTechnologies()).map(
+      (technology) => technology.name.toLowerCase()
+    );
+
+    req.availablesTechnologies = availablesTechnologies;
+
+    if (!availablesTechnologies.includes(insertedTechnology.toLowerCase())) {
+      const errorMessage: iMessage = {
+        message: `Insert one of these technologies: ${availablesTechnologies.join(
+          ", "
+        )}`,
+      };
+
+      return res.status(400).send(errorMessage);
+    }
+
+    const foundTechnology = await database.getTechnologies(insertedTechnology);
+
+    req.technologyId = foundTechnology[0].id;
+
+    next();
+  };
+
+  export const checkIfProjectHasTechnology = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    const projectsTechnologiesIds =
+      await database.getProjectsTechnologiesWithIds(
+        req.parsedId,
+        req.technologyId
+      );
+
+    const hasTechnology = projectsTechnologiesIds.length > 0;
+
+    const errorMessage: iMessage = { message: "" };
+
+    if (req.method === "POST" && hasTechnology) {
+      errorMessage.message = "Project already has the technology";
+
+      return res.status(409).send(errorMessage);
+    } else if (req.method === "DELETE" && !hasTechnology) {
+      errorMessage.message = "Project doesn't hava the deleted technology";
+
+      return res.status(400).send(errorMessage);
+    } else if (req.method === "DELETE") {
+      req.projectTechnologyId = projectsTechnologiesIds[0].id;
     }
 
     next();
