@@ -119,6 +119,38 @@ export namespace database {
     return queryResult.rows;
   };
 
+  export const getProjects = async (id?: number) => {
+    let queryString = `
+    SELECT
+    p.id as "projectID",
+    p.name as "projectName",
+    p.description as "projectDescription",
+    p.estimated_time as "projectEstimatedTime",
+    p.repository as "projectRepository",
+    p.start_date as "projectStartDate",
+    p.end_date as "projectEndDate",
+    p.developer_id as "projectDeveloperID",
+    t.id as "technologyID",
+    t.name as "technologyName"
+    FROM projects p
+    LEFT JOIN projects_technologies pt
+    ON project_id = p.id
+    LEFT JOIN technologies t
+    ON technology_id = t.id
+    `;
+
+    if (id || id === 0) {
+      queryString += "WHERE d.id = %L";
+
+      queryString = format(queryString, id);
+    }
+
+    const queryResult: QueryResult<iDeveloperJoinDeveloperInfo> =
+      await connection.query(queryString);
+
+    return queryResult.rows;
+  };
+
   export const deleteData = async (
     table: string,
     deletedColumn: string,
