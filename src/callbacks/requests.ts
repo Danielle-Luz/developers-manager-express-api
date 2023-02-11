@@ -148,6 +148,28 @@ export namespace requests {
     }
   };
 
+  export const getDeveloperProjects = async (req: Request, res: Response) => {
+    const developerId = req.parsedId;
+
+    try {
+      const developerProjects = await database.getDeveloperProjects(
+        developerId
+      );
+
+      return res.status(200).send(developerProjects);
+    } catch (error) {
+      const errorMessage: iMessage = {
+        message: "Failed to get developer's projects data in the database",
+      };
+
+      const errorObject = error as Error;
+
+      console.error(errorObject.stack);
+
+      return res.status(500).send(errorMessage);
+    }
+  };
+
   export const deleteDeveloper = async (req: Request, res: Response) => {
     try {
       await database.deleteData("developers", "id", req.parsedId);

@@ -186,8 +186,9 @@ export namespace database {
 
     queryString = format(queryString, developerId);
 
-    const queryResult: QueryResult<tDeveloperProjects> =
-      await connection.query(queryString);
+    const queryResult: QueryResult<tDeveloperProjects> = await connection.query(
+      queryString
+    );
 
     return queryResult.rows;
   };
