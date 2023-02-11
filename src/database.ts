@@ -6,6 +6,7 @@ import {
   iDeveloperInfo,
   iDeveloperJoinDeveloperInfo,
   iId,
+  iProjectJoinTechnologies,
 } from "./interfaces";
 import "dotenv/config";
 
@@ -140,12 +141,12 @@ export namespace database {
     `;
 
     if (id || id === 0) {
-      queryString += "WHERE d.id = %L";
+      queryString += "WHERE p.id = %L";
 
       queryString = format(queryString, id);
     }
 
-    const queryResult: QueryResult<iDeveloperJoinDeveloperInfo> =
+    const queryResult: QueryResult<iProjectJoinTechnologies> =
       await connection.query(queryString);
 
     return queryResult.rows;

@@ -50,7 +50,7 @@ interface Project {
   technology_name: string;
 }
 
-interface iProjectJoinTechnologies {
+export interface iProjectJoinTechnologies {
   project_id: number;
   project_name: string;
   project_description: string;
