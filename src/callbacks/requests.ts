@@ -137,7 +137,7 @@ export namespace requests {
 
         return res.status(404).send(errorMessage);
       }
-      
+
       return res.status(200).send(allProjectsList);
     } catch (error) {
       const errorMessage: iMessage = {
@@ -160,6 +160,24 @@ export namespace requests {
     } catch (error) {
       const errorMessage: iMessage = {
         message: "Failed to delete developer from the database",
+      };
+
+      const errorObject = error as Error;
+
+      console.error(errorObject.stack);
+
+      return res.status(500).send(errorMessage);
+    }
+  };
+
+  export const deleteProject = async (req: Request, res: Response) => {
+    try {
+      await database.deleteData("projects", "id", req.parsedId);
+
+      return res.status(204).send();
+    } catch (error) {
+      const errorMessage: iMessage = {
+        message: "Failed to delete project from the database",
       };
 
       const errorObject = error as Error;
