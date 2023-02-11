@@ -120,7 +120,7 @@ export namespace database {
     return queryResult.rows;
   };
 
-  export const getProjects = async (id?: number) => {
+  export const getProjects = async (id?: number, developerId?: number) => {
     let queryString = `
     SELECT
     p.id as "projectID",
@@ -145,6 +145,45 @@ export namespace database {
 
       queryString = format(queryString, id);
     }
+
+    const queryResult: QueryResult<iProjectJoinTechnologies> =
+      await connection.query(queryString);
+
+    return queryResult.rows;
+  };
+
+  export const getDeveloperProjects = async (developerId: number) => {
+    let queryString = `
+    SELECT
+    di.id AS "developerInfoID", 
+    developer_since AS "developerInfoDeveloperSince",
+    preferred_os AS "developerInfoPreferredOS",
+    d.id AS "developerID",
+    d."name" AS "developerName",
+    email AS "developerEmail"
+    p.id as "projectID",
+    p.name as "projectName",
+    p.description as "projectDescription",
+    p.estimated_time as "projectEstimatedTime",
+    p.repository as "projectRepository",
+    p.start_date as "projectStartDate",
+    p.end_date as "projectEndDate",
+    p.developer_id as "projectDeveloperID",
+    t.id as "technologyID",
+    t.name as "technologyName"
+    FROM projects p
+    INNER JOIN developers d
+    ON p.developer_id = d.id
+    LEFT JOIN developer_infos di
+    ON d.id = di.developer_id
+    LEFT JOIN projects_technologies pt
+    ON project_id = p.id
+    LEFT JOIN technologies t
+    ON technology_id = t.id
+    WHERE p.developer_id = %L
+    `;
+
+    queryString = format(queryString, developerId);
 
     const queryResult: QueryResult<iProjectJoinTechnologies> =
       await connection.query(queryString);
