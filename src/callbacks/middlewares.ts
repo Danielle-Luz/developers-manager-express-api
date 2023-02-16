@@ -60,9 +60,17 @@ export namespace middlewares {
     });
 
     if (missingKeys.length > 0) {
-      const errorMessage: iMessage = {
-        message: "Missing required keys: " + missingKeys.join(", "),
-      };
+      let errorMessage: iMessage = { message: ""};
+      if (req.method !== "PATCH") {
+        errorMessage = {
+          message: "Missing required keys: " + missingKeys.join(", "),
+        };
+      } else {
+        errorMessage = {
+          message: "At least one of those keys must be send.",
+          keys: missingKeys
+        }
+      }
       return res.status(400).send(errorMessage);
     }
 
@@ -435,9 +443,8 @@ export namespace middlewares {
 
     if (!isAValidOs) {
       const errorMessage: iMessage = {
-        message: `Preferred OS should have one of this values: ${os.join(
-          ", "
-        )}`,
+        message: "Invalid OS option.",
+        options: os
       };
 
       return res.status(400).send(errorMessage);
@@ -535,9 +542,8 @@ export namespace middlewares {
 
     if (!availablesTechnologies.includes(insertedTechnology.toLowerCase())) {
       const errorMessage: iMessage = {
-        message: `Insert one of these technologies: ${availablesTechnologies.join(
-          ", "
-        )}`,
+        message: "Technology not supported.",
+        options: availablesTechnologies
       };
 
       return res.status(400).send(errorMessage);
@@ -555,6 +561,8 @@ export namespace middlewares {
     res: Response,
     next: NextFunction
   ) => {
+    const technologyName = req.params.name;
+
     const projectsTechnologiesIds =
       await database.getProjectsTechnologiesWithIds(
         req.parsedId,
@@ -566,11 +574,11 @@ export namespace middlewares {
     const errorMessage: iMessage = { message: "" };
 
     if (req.method === "POST" && hasTechnology) {
-      errorMessage.message = "Project already has the technology";
+      errorMessage.message = `Technology ${technologyName} is already on this Project.`;
 
       return res.status(409).send(errorMessage);
     } else if (req.method === "DELETE" && !hasTechnology) {
-      errorMessage.message = "Project doesn't hava the deleted technology";
+      errorMessage.message = `Technology ${technologyName} not found on this Project.`;
 
       return res.status(400).send(errorMessage);
     } else if (req.method === "DELETE") {
