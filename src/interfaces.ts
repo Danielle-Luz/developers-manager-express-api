@@ -78,6 +78,8 @@ export interface iId {
 
 export interface iMessage {
   message: string;
+  keys?: string[];
+  options?: string[];
 }
 
 export interface iCount {
