@@ -60,7 +60,7 @@ export namespace middlewares {
     });
 
     if (missingKeys.length > 0) {
-      let errorMessage: iMessage = { message: ""};
+      let errorMessage: iMessage = { message: "" };
       if (req.method !== "PATCH") {
         errorMessage = {
           message: "Missing required keys: " + missingKeys.join(", "),
@@ -68,8 +68,8 @@ export namespace middlewares {
       } else {
         errorMessage = {
           message: "At least one of those keys must be send.",
-          keys: missingKeys
-        }
+          keys: missingKeys,
+        };
       }
       return res.status(400).send(errorMessage);
     }
@@ -119,9 +119,8 @@ export namespace middlewares {
 
     if (dataKeys.length === 0) {
       const errorMessage: iMessage = {
-        message: `Request body should have one or more of this keys: ${modelKeys.join(
-          ", "
-        )}`,
+        message: "At least one of those keys must be send.",
+        keys: modelKeys,
       };
 
       return res.status(400).send(errorMessage);
@@ -444,7 +443,7 @@ export namespace middlewares {
     if (!isAValidOs) {
       const errorMessage: iMessage = {
         message: "Invalid OS option.",
-        options: os
+        options: os,
       };
 
       return res.status(400).send(errorMessage);
@@ -543,7 +542,7 @@ export namespace middlewares {
     if (!availablesTechnologies.includes(insertedTechnology.toLowerCase())) {
       const errorMessage: iMessage = {
         message: "Technology not supported.",
-        options: availablesTechnologies
+        options: availablesTechnologies,
       };
 
       return res.status(400).send(errorMessage);
@@ -574,6 +573,7 @@ export namespace middlewares {
     const errorMessage: iMessage = { message: "" };
 
     if (req.method === "POST" && hasTechnology) {
+      const technologyName = req.body.name;
       errorMessage.message = `Technology ${technologyName} is already on this Project.`;
 
       return res.status(409).send(errorMessage);
