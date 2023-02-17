@@ -300,10 +300,7 @@ export namespace middlewares {
     _: Response,
     next: NextFunction
   ) => {
-    const developerInfoOnlyWithRightKeys: iDeveloperInfo = {
-      developerSince: new Date("2023/01/10"),
-      preferredOs: "",
-    };
+    const developerInfoOnlyWithRightKeys: iDeveloperInfo = {};
 
     storeDataOnlyWithRightKeys(
       req,
@@ -389,7 +386,11 @@ export namespace middlewares {
     res: Response,
     next: NextFunction
   ) => {
-    checkDateFormat(req, res, next, "developerSince");
+    if (req.body.developerSince) {
+      checkDateFormat(req, res, next, "developerSince");
+    } else {
+      return next();
+    }
   };
 
   export const checkProjectStartDateFormat = (
@@ -429,6 +430,10 @@ export namespace middlewares {
     res: Response,
     next: NextFunction
   ) => {
+    if (!req.body.preferredOs && req.method === "PATCH") {
+      return next();
+    }
+
     const preferredOs = req.body.preferredOs + "";
 
     let formattedOs = (preferredOs[0] || "").toUpperCase();

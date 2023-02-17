@@ -10,8 +10,8 @@ export interface iDeveloper {
 
 export interface iDeveloperInfo {
   id?: number;
-  developerSince: Date;
-  preferredOs: "";
+  developerSince?: Date;
+  preferredOs?: "";
   developerId?: number;
   [key: string]: string | number | Date | null;
 }
