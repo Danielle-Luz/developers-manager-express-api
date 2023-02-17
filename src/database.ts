@@ -101,7 +101,7 @@ export namespace database {
     SELECT 
     di.id AS "developerInfoID", 
     "developerSince" AS "developerInfoDeveloperSince",
-    "preferredOs" AS "developerInfoPreferredOS",
+    "preferredOS" AS "developerInfopreferredOS",
     d.id AS "developerID",
     "name" AS "developerName",
     email AS "developerEmail"
@@ -122,7 +122,11 @@ export namespace database {
     return queryResult.rows;
   };
 
-  export const getProjects = async (id?: number, developerId?: number) => {
+  export const getProjects = async (
+    id?: number,
+    developerId?: number,
+    hideDevId?: boolean
+  ) => {
     let queryString = `
     SELECT
     p.id as "projectID",
@@ -132,7 +136,7 @@ export namespace database {
     p.repository as "projectRepository",
     p."startDate" as "projectStartDate",
     p."endDate" as "projectEndDate",
-    p."developerId" as "projectDeveloperID",
+    ${hideDevId ? "" : `p."developerId" as "projectDeveloperID",`}
     t.id as "technologyID",
     t.name as "technologyName"
     FROM projects p
@@ -162,7 +166,7 @@ export namespace database {
     email AS "developerEmail",
     di.id AS "developerInfoID", 
     "developerSince" AS "developerInfoDeveloperSince",
-    "preferredOs" AS "developerInfoPreferredOS",
+    "preferredOS" AS "developerInfopreferredOS",
     p.id as "projectID",
     p.name as "projectName",
     p.description as "projectDescription",

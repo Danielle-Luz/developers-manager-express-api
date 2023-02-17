@@ -7,13 +7,20 @@ import { database } from "../database";
 import { iMessage } from "../interfaces";
 
 export namespace requests {
-  const createRegister = async (req: Request, res: Response, table: string) => {
+  const createRegister = async (
+    req: Request,
+    res: Response,
+    table: string,
+    selectReturn?: iProjectJoinTechnologies
+  ) => {
     const { body: newRegister } = req;
 
     try {
       const createdRegister = await database.createRegister(newRegister, table);
 
-      return res.status(201).send(createdRegister);
+      if (!selectReturn) {
+        return res.status(201).send(createdRegister);
+      }
     } catch (error) {
       const errorObject = error as Error;
 
@@ -35,13 +42,26 @@ export namespace requests {
     req: Request,
     res: Response
   ) => {
+    const projectId = req.parsedId;
+
+    const technologyWithProject = (
+      await database.getProjects(projectId, undefined, true)
+    )[0];
+
     req.body = {
       projectId: req.parsedId,
       technologyId: req.technologyId,
       addedIn: req.body.addedIn,
     };
 
-    await createRegister(req, res, "projectsTechnologies");
+    await createRegister(
+      req,
+      res,
+      "projectsTechnologies",
+      technologyWithProject
+    );
+
+    return res.status(201).send(technologyWithProject);
   };
 
   export const createDeveloperInfos = async (req: Request, res: Response) => {

@@ -17,7 +17,7 @@ export namespace middlewares {
 
   const developerInfoModel: iDeveloperInfo = {
     developerSince: new Date("2023/01/10"),
-    preferredOs: "",
+    preferredOS: "",
   };
 
   const projectModel: iProject = {
@@ -30,8 +30,7 @@ export namespace middlewares {
   };
 
   const technologyModel: iTechnology = {
-    name: "",
-    addedIn: new Date("2023/01/10"),
+    name: ""
   };
 
   const developerModelKeys = Object.keys(developerModel);
@@ -219,6 +218,8 @@ export namespace middlewares {
     res: Response,
     next: NextFunction
   ) => {
+    technologyModel.addedIn = new Date();
+    
     checkTypes(req, res, next, technologyModel);
   };
 
@@ -393,6 +394,19 @@ export namespace middlewares {
     }
   };
 
+  export const checkTechnologyDateFormat = (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    if (req.body.addedIn) {
+      checkDateFormat(req, res, next, "addedIn");
+    } else {
+      req.body.addedIn = new Date(Date.now());
+      return next();
+    }
+  };
+
   export const checkProjectStartDateFormat = (
     req: Request,
     res: Response,
@@ -417,31 +431,23 @@ export namespace middlewares {
     }
   };
 
-  export const checkTechnologyDateFormat = (
+  export const checkpreferredOS = (
     req: Request,
     res: Response,
     next: NextFunction
   ) => {
-    checkDateFormat(req, res, next, "addedIn");
-  };
-
-  export const checkPreferredOs = (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) => {
-    if (!req.body.preferredOs && req.method === "PATCH") {
+    if (!req.body.preferredOS && req.method === "PATCH") {
       return next();
     }
 
-    const preferredOs = req.body.preferredOs + "";
+    const preferredOS = req.body.preferredOS + "";
 
-    let formattedOs = (preferredOs[0] || "").toUpperCase();
+    let formattedOs = (preferredOS[0] || "").toUpperCase();
     formattedOs +=
-      preferredOs.toLowerCase() === "macos"
-        ? preferredOs.substring(1, 3).toLowerCase() +
-          preferredOs.substring(3).toUpperCase()
-        : preferredOs.substring(1).toLowerCase();
+      preferredOS.toLowerCase() === "macos"
+        ? preferredOS.substring(1, 3).toLowerCase() +
+          preferredOS.substring(3).toUpperCase()
+        : preferredOS.substring(1).toLowerCase();
 
     const isAValidOs = os.includes(formattedOs);
 
@@ -454,7 +460,7 @@ export namespace middlewares {
       return res.status(400).send(errorMessage);
     }
 
-    req.body.preferredOs = formattedOs;
+    req.body.preferredOS = formattedOs;
 
     next();
   };

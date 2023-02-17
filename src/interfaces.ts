@@ -11,7 +11,7 @@ export interface iDeveloper {
 export interface iDeveloperInfo {
   id?: number;
   developerSince?: Date;
-  preferredOs?: "";
+  preferredOS?: "";
   developerId?: number;
   [key: string]: string | number | Date | null;
 }
@@ -22,7 +22,7 @@ export interface iDeveloperJoinDeveloperInfo {
   developer_email: string;
   developerInfoId: number | null;
   developer_info_developerSince: string | null;
-  developer_info_preferredOs: "" | null;
+  developer_info_preferredOS: "" | null;
 }
 
 export interface iProject {
@@ -58,7 +58,7 @@ export interface iProjectJoinTechnologies {
   project_repository: string;
   project_startDate: string;
   project_endDate: string | null;
-  project_developerId: number | null;
+  project_developerId?: number | null;
   technologyId: number | null;
   technology_name: string | null;
 }
@@ -66,7 +66,7 @@ export interface iProjectJoinTechnologies {
 export interface iTechnology {
   id?: number;
   name: string;
-  addedIn: Date;
+  addedIn?: Date;
   [key: string]: number | string | Date;
 }
 

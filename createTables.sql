@@ -3,7 +3,7 @@ CREATE TYPE "os" AS ENUM ('Windows', 'Linux', 'MacOS');
 CREATE TABLE IF NOT EXISTS "developerInfos" (
 	id SERIAL PRIMARY KEY,
 	"developerSince" DATE NOT NULL,
-	"preferredOs" "os" NOT NULL,
+	"preferredOS" "os" NOT NULL,
 	"developerId" INT
 );
 

@@ -596,7 +596,7 @@
       "method": "POST",
       "body": {
         "mimeType": "application/json",
-        "text": "{\n    \"developerSince\": \"2013/01/01\",\n    \"preferredOs\": \"Windows\"\n}"
+        "text": "{\n    \"developerSince\": \"2013/01/01\",\n    \"preferredOS\": \"Windows\"\n}"
       },
       "parameters": [],
       "headers": [{ "name": "Content-Type", "value": "application/json" }],
@@ -634,7 +634,7 @@
       "method": "POST",
       "body": {
         "mimeType": "application/json",
-        "text": "{\n    \"developerSince\": \"\",\n    \"preferredOs\": \"Linux\"\n}"
+        "text": "{\n    \"developerSince\": \"\",\n    \"preferredOS\": \"Linux\"\n}"
       },
       "parameters": [],
       "headers": [{ "name": "Content-Type", "value": "application/json" }],
@@ -683,7 +683,7 @@
       "method": "POST",
       "body": {
         "mimeType": "application/json",
-        "text": "{\n    \"developerSince\": \"2013/01/01\",\n    \"preferredOs\": \"Linux\",\n\t\t\"teste\": 5\n}"
+        "text": "{\n    \"developerSince\": \"2013/01/01\",\n    \"preferredOS\": \"Linux\",\n\t\t\"teste\": 5\n}"
       },
       "parameters": [],
       "headers": [{ "name": "Content-Type", "value": "application/json" }],
@@ -709,7 +709,7 @@
       "method": "POST",
       "body": {
         "mimeType": "application/json",
-        "text": "{\n    \"developerSince\": \"2013/01/01\",\n    \"preferredOs\": \"\"\n}"
+        "text": "{\n    \"developerSince\": \"2013/01/01\",\n    \"preferredOS\": \"\"\n}"
       },
       "parameters": [],
       "headers": [{ "name": "Content-Type", "value": "application/json" }],
@@ -926,7 +926,7 @@
       "method": "PATCH",
       "body": {
         "mimeType": "application/json",
-        "text": "{\n    \"developerSince\": \"2022/03/04\",\n    \"preferredOs\": \"macos\"\n}"
+        "text": "{\n    \"developerSince\": \"2022/03/04\",\n    \"preferredOS\": \"macos\"\n}"
       },
       "parameters": [],
       "headers": [{ "name": "Content-Type", "value": "application/json" }],
@@ -964,7 +964,7 @@
       "method": "PATCH",
       "body": {
         "mimeType": "application/json",
-        "text": "{\n    \"developerSince\": \"\",\n    \"preferredOs\": \"Linux\"\n}"
+        "text": "{\n    \"developerSince\": \"\",\n    \"preferredOS\": \"Linux\"\n}"
       },
       "parameters": [],
       "headers": [{ "name": "Content-Type", "value": "application/json" }],
@@ -1013,7 +1013,7 @@
       "method": "PATCH",
       "body": {
         "mimeType": "application/json",
-        "text": "{\n    \"developerSince\": \"2013/01/01\",\n    \"preferredOs\": \"Linux\",\n\t\t\"teste\": 5\n}"
+        "text": "{\n    \"developerSince\": \"2013/01/01\",\n    \"preferredOS\": \"Linux\",\n\t\t\"teste\": 5\n}"
       },
       "parameters": [],
       "headers": [{ "name": "Content-Type", "value": "application/json" }],
@@ -1039,7 +1039,7 @@
       "method": "PATCH",
       "body": {
         "mimeType": "application/json",
-        "text": "{\n    \"developerSince\": \"2013/01/01\",\n    \"preferredOs\": \"\"\n}"
+        "text": "{\n    \"developerSince\": \"2013/01/01\",\n    \"preferredOS\": \"\"\n}"
       },
       "parameters": [],
       "headers": [{ "name": "Content-Type", "value": "application/json" }],
