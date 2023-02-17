@@ -16,22 +16,22 @@ export namespace middlewares {
   };
 
   const developerInfoModel: iDeveloperInfo = {
-    developer_since: new Date("2023/01/10"),
-    preferred_os: "",
+    developerSince: new Date("2023/01/10"),
+    preferredOs: "",
   };
 
   const projectModel: iProject = {
     name: "",
     description: "",
-    estimated_time: "",
+    estimatedTime: "",
     repository: "",
-    start_date: new Date("2023/01/10"),
-    developer_id: 0,
+    startDate: new Date("2023/01/10"),
+    developerId: 0,
   };
 
   const technologyModel: iTechnology = {
     name: "",
-    added_in: new Date("2023/01/10"),
+    addedIn: new Date("2023/01/10"),
   };
 
   const developerModelKeys = Object.keys(developerModel);
@@ -150,7 +150,7 @@ export namespace middlewares {
     res: Response,
     next: NextFunction
   ) => {
-    checkEmptyKeys(req, res, next, [...projectModelKeys, "end_date"]);
+    checkEmptyKeys(req, res, next, [...projectModelKeys, "endDate"]);
   };
 
   const checkTypes = (
@@ -207,8 +207,8 @@ export namespace middlewares {
   ) => {
     const projectModelWithEndDate = { ...projectModel };
 
-    if (req.body.end_date) {
-      projectModelWithEndDate.end_date = new Date("2023/03/01");
+    if (req.body.endDate) {
+      projectModelWithEndDate.endDate = new Date("2023/03/01");
     }
 
     checkTypes(req, res, next, projectModelWithEndDate);
@@ -291,7 +291,7 @@ export namespace middlewares {
 
     storeDataOnlyWithRightKeys(req, next, projectOnlytWithRightKeys, [
       ...projectModelKeys,
-      "end_date",
+      "endDate",
     ]);
   };
 
@@ -301,8 +301,8 @@ export namespace middlewares {
     next: NextFunction
   ) => {
     const developerInfoOnlyWithRightKeys: iDeveloperInfo = {
-      developer_since: new Date("2023/01/10"),
-      preferred_os: "",
+      developerSince: new Date("2023/01/10"),
+      preferredOs: "",
     };
 
     storeDataOnlyWithRightKeys(
@@ -389,7 +389,7 @@ export namespace middlewares {
     res: Response,
     next: NextFunction
   ) => {
-    checkDateFormat(req, res, next, "developer_since");
+    checkDateFormat(req, res, next, "developerSince");
   };
 
   export const checkProjectStartDateFormat = (
@@ -397,8 +397,8 @@ export namespace middlewares {
     res: Response,
     next: NextFunction
   ) => {
-    if (req.body.start_date) {
-      checkDateFormat(req, res, next, "start_date");
+    if (req.body.startDate) {
+      checkDateFormat(req, res, next, "startDate");
     } else {
       next();
     }
@@ -409,8 +409,8 @@ export namespace middlewares {
     res: Response,
     next: NextFunction
   ) => {
-    if (req.body.end_date) {
-      checkDateFormat(req, res, next, "end_date");
+    if (req.body.endDate) {
+      checkDateFormat(req, res, next, "endDate");
     } else {
       next();
     }
@@ -421,7 +421,7 @@ export namespace middlewares {
     res: Response,
     next: NextFunction
   ) => {
-    checkDateFormat(req, res, next, "added_in");
+    checkDateFormat(req, res, next, "addedIn");
   };
 
   export const checkPreferredOs = (
@@ -429,7 +429,7 @@ export namespace middlewares {
     res: Response,
     next: NextFunction
   ) => {
-    const preferredOs = req.body.preferred_os + "";
+    const preferredOs = req.body.preferredOs + "";
 
     let formattedOs = (preferredOs[0] || "").toUpperCase();
     formattedOs +=
@@ -449,7 +449,7 @@ export namespace middlewares {
       return res.status(400).send(errorMessage);
     }
 
-    req.body.preferred_os = formattedOs;
+    req.body.preferredOs = formattedOs;
 
     next();
   };
@@ -466,7 +466,7 @@ export namespace middlewares {
     res: Response,
     next: NextFunction
   ) => {
-    const developerId = req.body.developer_id;
+    const developerId = req.body.developerId;
 
     if (developerId) {
       req.parsedId = developerId;

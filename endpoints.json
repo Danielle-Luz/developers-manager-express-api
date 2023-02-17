@@ -176,7 +176,7 @@
       "method": "POST",
       "body": {
         "mimeType": "application/json",
-        "text": "{\n\t\"name\": \"Projeto A\",\n\t\"description\": \"Desenvolvimento de uma aplicação para gerenciamento de tarefas\",\n\t\"estimated_time\": \"12 semanas\",\n\t\"repository\": \"https://github.com/projetoA\",\n\t\"start_date\": \"2023/01/10\",\n\t\"developer_id\": 4\n}"
+        "text": "{\n\t\"name\": \"Projeto A\",\n\t\"description\": \"Desenvolvimento de uma aplicação para gerenciamento de tarefas\",\n\t\"estimatedTime\": \"12 semanas\",\n\t\"repository\": \"https://github.com/projetoA\",\n\t\"startDate\": \"2023/01/10\",\n\t\"developerId\": 4\n}"
       },
       "parameters": [],
       "headers": [{ "name": "Content-Type", "value": "application/json" }],
@@ -214,7 +214,7 @@
       "method": "POST",
       "body": {
         "mimeType": "application/json",
-        "text": "{\n\t\"name\": \"Projeto F\",\n\t\"description\": \"Criação de um sistema de gestão financeira para pequenas empresas\",\n\t\"estimated_time\": \"10 semanas\",\n\t\"repository\": \"https://github.com/projetoF\",\n\t\"start_date\": \"2024/06/16\",\n\t\"developer_id\": 4,\n\t\"end_date\": \"2020/04/21\"\n}"
+        "text": "{\n\t\"name\": \"Projeto F\",\n\t\"description\": \"Criação de um sistema de gestão financeira para pequenas empresas\",\n\t\"estimatedTime\": \"10 semanas\",\n\t\"repository\": \"https://github.com/projetoF\",\n\t\"startDate\": \"2024/06/16\",\n\t\"developerId\": 4,\n\t\"endDate\": \"2020/04/21\"\n}"
       },
       "parameters": [],
       "headers": [{ "name": "Content-Type", "value": "application/json" }],
@@ -240,7 +240,7 @@
       "method": "POST",
       "body": {
         "mimeType": "application/json",
-        "text": "{\n\t\"name\": \"Projeto A\",\n\t\"repository\": \"https://github.com/projetoA\",\n\t\"start_date\": \"2023/01/10\"\n}"
+        "text": "{\n\t\"name\": \"Projeto A\",\n\t\"repository\": \"https://github.com/projetoA\",\n\t\"startDate\": \"2023/01/10\"\n}"
       },
       "parameters": [],
       "headers": [{ "name": "Content-Type", "value": "application/json" }],
@@ -266,7 +266,7 @@
       "method": "POST",
       "body": {
         "mimeType": "application/json",
-        "text": "{\n\t\"name\": \"Projeto B\",\n\t\"description\": \"Criação de uma plataforma de e-commerce\",\n\t\"estimated_time\": \"16 semanas\",\n\t\"repository\": \"https://github.com/projetoB\",\n\t\"start_date\": \"2023/01/10\",\n\t\"developer_id\": 4,\n\t\"teste\": 123\n}"
+        "text": "{\n\t\"name\": \"Projeto B\",\n\t\"description\": \"Criação de uma plataforma de e-commerce\",\n\t\"estimatedTime\": \"16 semanas\",\n\t\"repository\": \"https://github.com/projetoB\",\n\t\"startDate\": \"2023/01/10\",\n\t\"developerId\": 4,\n\t\"teste\": 123\n}"
       },
       "parameters": [],
       "headers": [{ "name": "Content-Type", "value": "application/json" }],
@@ -292,7 +292,7 @@
       "method": "POST",
       "body": {
         "mimeType": "application/json",
-        "text": "{\n\t\"name\": 50,\n\t\"description\": \"Desenvolvimento de uma aplicação para gerenciamento de tarefas\",\n\t\"estimated_time\": \"12 semanas\",\n\t\"repository\": \"https://github.com/projetoA\",\n\t\"start_date\": \"2023/01/10\",\n\t\"developer_id\": 4\n}"
+        "text": "{\n\t\"name\": 50,\n\t\"description\": \"Desenvolvimento de uma aplicação para gerenciamento de tarefas\",\n\t\"estimatedTime\": \"12 semanas\",\n\t\"repository\": \"https://github.com/projetoA\",\n\t\"startDate\": \"2023/01/10\",\n\t\"developerId\": 4\n}"
       },
       "parameters": [],
       "headers": [{ "name": "Content-Type", "value": "application/json" }],
@@ -457,7 +457,7 @@
       "method": "PATCH",
       "body": {
         "mimeType": "application/json",
-        "text": "{\n\t\"name\": \"Projeto Y\",\n\t\"description\": \"Criação de uma API\",\n\t\"start_date\": \"2018/04/04\",\n\t\"end_date\": \"2025/06/02\",\n\t\"developer_id\": 5\n}"
+        "text": "{\n\t\"name\": \"Projeto Y\",\n\t\"description\": \"Criação de uma API\",\n\t\"startDate\": \"2018/04/04\",\n\t\"endDate\": \"2025/06/02\",\n\t\"developerId\": 5\n}"
       },
       "parameters": [],
       "headers": [{ "name": "Content-Type", "value": "application/json" }],
@@ -495,7 +495,7 @@
       "method": "PATCH",
       "body": {
         "mimeType": "application/json",
-        "text": "{\n\t\"repository\": \"https://github.com/projetoA\",\n\t\"start_date\": \"2023/01/10\",\n\t\"developer_id\": 60\n}"
+        "text": "{\n\t\"repository\": \"https://github.com/projetoA\",\n\t\"startDate\": \"2023/01/10\",\n\t\"developerId\": 60\n}"
       },
       "parameters": [],
       "headers": [{ "name": "Content-Type", "value": "application/json" }],
@@ -544,7 +544,7 @@
       "method": "PATCH",
       "body": {
         "mimeType": "application/json",
-        "text": "{\n\t\"description\": \"Desenvolvimento de um banco de dados\",\n\t\"estimated_time\": \"20 dias\",\n\t\"teste\": 124\n}"
+        "text": "{\n\t\"description\": \"Desenvolvimento de um banco de dados\",\n\t\"estimatedTime\": \"20 dias\",\n\t\"teste\": 124\n}"
       },
       "parameters": [],
       "headers": [{ "name": "Content-Type", "value": "application/json" }],
@@ -570,7 +570,7 @@
       "method": "PATCH",
       "body": {
         "mimeType": "application/json",
-        "text": "{\n\t\"name\":95895,\n\t\"description\": [\"Desenvolvimento de uma aplicação para gerenciamento de tarefas\"],\n\t\"estimated_time\": 5,\n\t\"repository\": true,\n\t\"start_date\": \"2023/01/10\",\n\t\"developer_id\": 4\n}"
+        "text": "{\n\t\"name\":95895,\n\t\"description\": [\"Desenvolvimento de uma aplicação para gerenciamento de tarefas\"],\n\t\"estimatedTime\": 5,\n\t\"repository\": true,\n\t\"startDate\": \"2023/01/10\",\n\t\"developerId\": 4\n}"
       },
       "parameters": [],
       "headers": [{ "name": "Content-Type", "value": "application/json" }],
@@ -596,7 +596,7 @@
       "method": "POST",
       "body": {
         "mimeType": "application/json",
-        "text": "{\n    \"developer_since\": \"2013/01/01\",\n    \"preferred_os\": \"Windows\"\n}"
+        "text": "{\n    \"developerSince\": \"2013/01/01\",\n    \"preferredOs\": \"Windows\"\n}"
       },
       "parameters": [],
       "headers": [{ "name": "Content-Type", "value": "application/json" }],
@@ -634,7 +634,7 @@
       "method": "POST",
       "body": {
         "mimeType": "application/json",
-        "text": "{\n    \"developer_since\": \"\",\n    \"preferred_os\": \"Linux\"\n}"
+        "text": "{\n    \"developerSince\": \"\",\n    \"preferredOs\": \"Linux\"\n}"
       },
       "parameters": [],
       "headers": [{ "name": "Content-Type", "value": "application/json" }],
@@ -683,7 +683,7 @@
       "method": "POST",
       "body": {
         "mimeType": "application/json",
-        "text": "{\n    \"developer_since\": \"2013/01/01\",\n    \"preferred_os\": \"Linux\",\n\t\t\"teste\": 5\n}"
+        "text": "{\n    \"developerSince\": \"2013/01/01\",\n    \"preferredOs\": \"Linux\",\n\t\t\"teste\": 5\n}"
       },
       "parameters": [],
       "headers": [{ "name": "Content-Type", "value": "application/json" }],
@@ -709,7 +709,7 @@
       "method": "POST",
       "body": {
         "mimeType": "application/json",
-        "text": "{\n    \"developer_since\": \"2013/01/01\",\n    \"preferred_os\": \"\"\n}"
+        "text": "{\n    \"developerSince\": \"2013/01/01\",\n    \"preferredOs\": \"\"\n}"
       },
       "parameters": [],
       "headers": [{ "name": "Content-Type", "value": "application/json" }],
@@ -735,7 +735,7 @@
       "method": "POST",
       "body": {
         "mimeType": "application/json",
-        "text": "{\n    \"name\": \"DJANGO\",\n\t\t\"added_in\": \"2004/05/09\"\n}"
+        "text": "{\n    \"name\": \"DJANGO\",\n\t\t\"addedIn\": \"2004/05/09\"\n}"
       },
       "parameters": [],
       "headers": [{ "name": "Content-Type", "value": "application/json" }],
@@ -773,7 +773,7 @@
       "method": "POST",
       "body": {
         "mimeType": "application/json",
-        "text": "{\n    \"name\": \"DJANGO\",\n\t\t\"added_in\": \"2004/05/09\"\n}"
+        "text": "{\n    \"name\": \"DJANGO\",\n\t\t\"addedIn\": \"2004/05/09\"\n}"
       },
       "parameters": [],
       "headers": [{ "name": "Content-Type", "value": "application/json" }],
@@ -799,7 +799,7 @@
       "method": "POST",
       "body": {
         "mimeType": "application/json",
-        "text": "{\n    \"name\": \"Ventilador\",\n\t\t\"added_in\": \"2020/02/19\"\n}"
+        "text": "{\n    \"name\": \"Ventilador\",\n\t\t\"addedIn\": \"2020/02/19\"\n}"
       },
       "parameters": [],
       "headers": [{ "name": "Content-Type", "value": "application/json" }],
@@ -825,7 +825,7 @@
       "method": "POST",
       "body": {
         "mimeType": "application/json",
-        "text": "{\n    \"name\": \"Javascript\",\n\t\t\"added_in\": \"/02/19\"\n}"
+        "text": "{\n    \"name\": \"Javascript\",\n\t\t\"addedIn\": \"/02/19\"\n}"
       },
       "parameters": [],
       "headers": [{ "name": "Content-Type", "value": "application/json" }],
@@ -851,7 +851,7 @@
       "method": "POST",
       "body": {
         "mimeType": "application/json",
-        "text": "{\n    \"name\": \"pyTHON\",\n\t\t\"added_in\": \"2020/02/19\",\n\t\t\"teste\": []\n}"
+        "text": "{\n    \"name\": \"pyTHON\",\n\t\t\"addedIn\": \"2020/02/19\",\n\t\t\"teste\": []\n}"
       },
       "parameters": [],
       "headers": [{ "name": "Content-Type", "value": "application/json" }],
@@ -877,7 +877,7 @@
       "method": "POST",
       "body": {
         "mimeType": "application/json",
-        "text": "{\n    \"name\": \"Javascript\",\n\t\t\"added_in\": \"2020/02/19\"\n}"
+        "text": "{\n    \"name\": \"Javascript\",\n\t\t\"addedIn\": \"2020/02/19\"\n}"
       },
       "parameters": [],
       "headers": [{ "name": "Content-Type", "value": "application/json" }],
@@ -926,7 +926,7 @@
       "method": "PATCH",
       "body": {
         "mimeType": "application/json",
-        "text": "{\n    \"developer_since\": \"2022/03/04\",\n    \"preferred_os\": \"macos\"\n}"
+        "text": "{\n    \"developerSince\": \"2022/03/04\",\n    \"preferredOs\": \"macos\"\n}"
       },
       "parameters": [],
       "headers": [{ "name": "Content-Type", "value": "application/json" }],
@@ -964,7 +964,7 @@
       "method": "PATCH",
       "body": {
         "mimeType": "application/json",
-        "text": "{\n    \"developer_since\": \"\",\n    \"preferred_os\": \"Linux\"\n}"
+        "text": "{\n    \"developerSince\": \"\",\n    \"preferredOs\": \"Linux\"\n}"
       },
       "parameters": [],
       "headers": [{ "name": "Content-Type", "value": "application/json" }],
@@ -1013,7 +1013,7 @@
       "method": "PATCH",
       "body": {
         "mimeType": "application/json",
-        "text": "{\n    \"developer_since\": \"2013/01/01\",\n    \"preferred_os\": \"Linux\",\n\t\t\"teste\": 5\n}"
+        "text": "{\n    \"developerSince\": \"2013/01/01\",\n    \"preferredOs\": \"Linux\",\n\t\t\"teste\": 5\n}"
       },
       "parameters": [],
       "headers": [{ "name": "Content-Type", "value": "application/json" }],
@@ -1039,7 +1039,7 @@
       "method": "PATCH",
       "body": {
         "mimeType": "application/json",
-        "text": "{\n    \"developer_since\": \"2013/01/01\",\n    \"preferred_os\": \"\"\n}"
+        "text": "{\n    \"developerSince\": \"2013/01/01\",\n    \"preferredOs\": \"\"\n}"
       },
       "parameters": [],
       "headers": [{ "name": "Content-Type", "value": "application/json" }],

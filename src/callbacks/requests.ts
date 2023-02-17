@@ -36,12 +36,12 @@ export namespace requests {
     res: Response
   ) => {
     req.body = {
-      project_id: req.parsedId,
-      technology_id: req.technologyId,
-      added_in: req.body.added_in,
+      projectId: req.parsedId,
+      technologyId: req.technologyId,
+      addedIn: req.body.addedIn,
     };
 
-    await createRegister(req, res, "projects_technologies");
+    await createRegister(req, res, "projectsTechnologies");
   };
 
   export const createDeveloperInfos = async (req: Request, res: Response) => {
@@ -108,7 +108,7 @@ export namespace requests {
   export const updateDeveloperInfo = async (req: Request, res: Response) => {
     req.parsedId = req.developerInfoId;
 
-    return await updateData(req, res, "developer_infos");
+    return await updateData(req, res, "developerInfos");
   };
 
   export const updateProject = async (req: Request, res: Response) => {
@@ -225,7 +225,7 @@ export namespace requests {
   ) => {
     try {
       await database.deleteData(
-        "projects_technologies",
+        "projectsTechnologies",
         "id",
         req.projectTechnologyId
       );
