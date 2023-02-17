@@ -20,9 +20,9 @@ api.post(
 api.post(
   "/developers/:id/infos",
   middlewares.checkCreateDeveloperInfoKeys,
+  middlewares.checkDeveloperDateFormat,
   middlewares.storeDeveloperInfoOnlyWithRightKeys,
   middlewares.checkpreferredOS,
-  middlewares.checkDeveloperDateFormat,
   middlewares.parseId,
   middlewares.checkIfDeveloperExists,
   middlewares.checkIfDeveloperHasInfo,
@@ -81,9 +81,9 @@ api.patch(
   middlewares.parseId,
   middlewares.checkIfDeveloperExists,
   middlewares.checkEmptyDeveloperInfoKeys,
+  middlewares.checkDeveloperDateFormat,
   middlewares.storeDeveloperInfoOnlyWithRightKeys,
   middlewares.checkpreferredOS,
-  middlewares.checkDeveloperDateFormat,
   middlewares.checkIfDeveloperHasInfo,
   requests.updateDeveloperInfo
 );

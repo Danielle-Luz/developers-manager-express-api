@@ -125,7 +125,8 @@ export namespace database {
   export const getProjects = async (
     id?: number,
     developerId?: number,
-    hideDevId?: boolean
+    hideDevId?: boolean,
+    projectTechnologyId?: number,
   ) => {
     let queryString = `
     SELECT
@@ -150,6 +151,10 @@ export namespace database {
       queryString += "WHERE p.id = %L";
 
       queryString = format(queryString, id);
+    } else if (projectTechnologyId || projectTechnologyId === 0) {
+      queryString += "WHERE pt.id = %L";
+
+      queryString = format(queryString, projectTechnologyId);
     }
 
     const queryResult: QueryResult<iProjectJoinTechnologies> =

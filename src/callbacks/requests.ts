@@ -1,4 +1,5 @@
 import {
+  iDeveloper,
   iDeveloperJoinDeveloperInfo,
   iProjectJoinTechnologies,
 } from "./../interfaces";
@@ -11,15 +12,17 @@ export namespace requests {
     req: Request,
     res: Response,
     table: string,
-    selectReturn?: iProjectJoinTechnologies
+    hasSelectReturn?: boolean
   ) => {
     const { body: newRegister } = req;
 
     try {
       const createdRegister = await database.createRegister(newRegister, table);
 
-      if (!selectReturn) {
+      if (!hasSelectReturn) {
         return res.status(201).send(createdRegister);
+      } else {
+        return createdRegister;
       }
     } catch (error) {
       const errorObject = error as Error;
@@ -43,24 +46,24 @@ export namespace requests {
     res: Response
   ) => {
     const projectId = req.parsedId;
-
-    const technologyWithProject = (
-      await database.getProjects(projectId, undefined, true)
-    )[0];
-
+    
     req.body = {
       projectId: req.parsedId,
       technologyId: req.technologyId,
       addedIn: req.body.addedIn,
     };
-
-    await createRegister(
+    
+    const createdProjectTechnology = (await createRegister(
       req,
       res,
       "projectsTechnologies",
-      technologyWithProject
-    );
+      true
+      )) as iDeveloper;
 
+    const technologyWithProject = 
+      await database.getProjects(undefined, undefined, true, createdProjectTechnology.id)
+    ;
+      
     return res.status(201).send(technologyWithProject);
   };
 

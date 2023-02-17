@@ -219,7 +219,7 @@ export namespace middlewares {
     next: NextFunction
   ) => {
     technologyModel.addedIn = new Date();
-    
+
     checkTypes(req, res, next, technologyModel);
   };
 
@@ -258,7 +258,7 @@ export namespace middlewares {
     const { body: newData } = req;
 
     rightKeys.forEach((key) => {
-      if (newData[key]) {
+      if (newData[key] !== undefined) {
         dataWithRightKeys[key] = newData[key];
       }
     });
@@ -322,7 +322,7 @@ export namespace middlewares {
       req,
       next,
       technologiesOnlyWithRightKeys,
-      technologyModelKeys
+      [...technologyModelKeys, "addedIn"]
     );
   };
 
@@ -387,7 +387,7 @@ export namespace middlewares {
     res: Response,
     next: NextFunction
   ) => {
-    if (req.body.developerSince) {
+    if (req.body.developerSince !== undefined) {
       checkDateFormat(req, res, next, "developerSince");
     } else {
       return next();
@@ -399,7 +399,7 @@ export namespace middlewares {
     res: Response,
     next: NextFunction
   ) => {
-    if (req.body.addedIn) {
+    if (req.body.addedIn !== undefined) {
       checkDateFormat(req, res, next, "addedIn");
     } else {
       req.body.addedIn = new Date(Date.now());
@@ -412,7 +412,7 @@ export namespace middlewares {
     res: Response,
     next: NextFunction
   ) => {
-    if (req.body.startDate) {
+    if (req.body.startDate !==  undefined) {
       checkDateFormat(req, res, next, "startDate");
     } else {
       next();
@@ -424,7 +424,7 @@ export namespace middlewares {
     res: Response,
     next: NextFunction
   ) => {
-    if (req.body.endDate) {
+    if (req.body.endDate !== undefined) {
       checkDateFormat(req, res, next, "endDate");
     } else {
       next();
@@ -436,7 +436,7 @@ export namespace middlewares {
     res: Response,
     next: NextFunction
   ) => {
-    if (!req.body.preferredOS && req.method === "PATCH") {
+    if (req.body.preferredOS === undefined && req.method === "PATCH") {
       return next();
     }
 
