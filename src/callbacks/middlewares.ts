@@ -16,22 +16,21 @@ export namespace middlewares {
   };
 
   const developerInfoModel: iDeveloperInfo = {
-    developer_since: new Date("2023/01/10"),
-    preferred_os: "",
+    developerSince: new Date("2023/01/10"),
+    preferredOS: "",
   };
 
   const projectModel: iProject = {
     name: "",
     description: "",
-    estimated_time: "",
+    estimatedTime: "",
     repository: "",
-    start_date: new Date("2023/01/10"),
-    developer_id: 0,
+    startDate: new Date("2023/01/10"),
+    developerId: 0,
   };
 
   const technologyModel: iTechnology = {
-    name: "",
-    added_in: new Date("2023/01/10"),
+    name: ""
   };
 
   const developerModelKeys = Object.keys(developerModel);
@@ -60,9 +59,17 @@ export namespace middlewares {
     });
 
     if (missingKeys.length > 0) {
-      const errorMessage: iMessage = {
-        message: "Missing required keys: " + missingKeys.join(", "),
-      };
+      let errorMessage: iMessage = { message: "" };
+      if (req.method !== "PATCH") {
+        errorMessage = {
+          message: "Missing required keys: " + missingKeys.join(", "),
+        };
+      } else {
+        errorMessage = {
+          message: "At least one of those keys must be send.",
+          keys: missingKeys,
+        };
+      }
       return res.status(400).send(errorMessage);
     }
 
@@ -111,9 +118,8 @@ export namespace middlewares {
 
     if (dataKeys.length === 0) {
       const errorMessage: iMessage = {
-        message: `Request body should have one or more of this keys: ${modelKeys.join(
-          ", "
-        )}`,
+        message: "At least one of those keys must be send.",
+        keys: modelKeys,
       };
 
       return res.status(400).send(errorMessage);
@@ -143,7 +149,7 @@ export namespace middlewares {
     res: Response,
     next: NextFunction
   ) => {
-    checkEmptyKeys(req, res, next, [...projectModelKeys, "end_date"]);
+    checkEmptyKeys(req, res, next, [...projectModelKeys, "endDate"]);
   };
 
   const checkTypes = (
@@ -200,8 +206,8 @@ export namespace middlewares {
   ) => {
     const projectModelWithEndDate = { ...projectModel };
 
-    if (req.body.end_date) {
-      projectModelWithEndDate.end_date = new Date("2023/03/01");
+    if (req.body.endDate) {
+      projectModelWithEndDate.endDate = new Date("2023/03/01");
     }
 
     checkTypes(req, res, next, projectModelWithEndDate);
@@ -212,6 +218,8 @@ export namespace middlewares {
     res: Response,
     next: NextFunction
   ) => {
+    technologyModel.addedIn = new Date();
+
     checkTypes(req, res, next, technologyModel);
   };
 
@@ -250,7 +258,7 @@ export namespace middlewares {
     const { body: newData } = req;
 
     rightKeys.forEach((key) => {
-      if (newData[key]) {
+      if (newData[key] !== undefined) {
         dataWithRightKeys[key] = newData[key];
       }
     });
@@ -284,7 +292,7 @@ export namespace middlewares {
 
     storeDataOnlyWithRightKeys(req, next, projectOnlytWithRightKeys, [
       ...projectModelKeys,
-      "end_date",
+      "endDate",
     ]);
   };
 
@@ -293,10 +301,7 @@ export namespace middlewares {
     _: Response,
     next: NextFunction
   ) => {
-    const developerInfoOnlyWithRightKeys: iDeveloperInfo = {
-      developer_since: new Date("2023/01/10"),
-      preferred_os: "",
-    };
+    const developerInfoOnlyWithRightKeys: iDeveloperInfo = {};
 
     storeDataOnlyWithRightKeys(
       req,
@@ -317,7 +322,7 @@ export namespace middlewares {
       req,
       next,
       technologiesOnlyWithRightKeys,
-      technologyModelKeys
+      [...technologyModelKeys, "addedIn"]
     );
   };
 
@@ -382,7 +387,24 @@ export namespace middlewares {
     res: Response,
     next: NextFunction
   ) => {
-    checkDateFormat(req, res, next, "developer_since");
+    if (req.body.developerSince !== undefined) {
+      checkDateFormat(req, res, next, "developerSince");
+    } else {
+      return next();
+    }
+  };
+
+  export const checkTechnologyDateFormat = (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    if (req.body.addedIn !== undefined) {
+      checkDateFormat(req, res, next, "addedIn");
+    } else {
+      req.body.addedIn = new Date(Date.now());
+      return next();
+    }
   };
 
   export const checkProjectStartDateFormat = (
@@ -390,8 +412,8 @@ export namespace middlewares {
     res: Response,
     next: NextFunction
   ) => {
-    if (req.body.start_date) {
-      checkDateFormat(req, res, next, "start_date");
+    if (req.body.startDate !==  undefined) {
+      checkDateFormat(req, res, next, "startDate");
     } else {
       next();
     }
@@ -402,48 +424,43 @@ export namespace middlewares {
     res: Response,
     next: NextFunction
   ) => {
-    if (req.body.end_date) {
-      checkDateFormat(req, res, next, "end_date");
+    if (req.body.endDate !== undefined) {
+      checkDateFormat(req, res, next, "endDate");
     } else {
       next();
     }
   };
 
-  export const checkTechnologyDateFormat = (
+  export const checkpreferredOS = (
     req: Request,
     res: Response,
     next: NextFunction
   ) => {
-    checkDateFormat(req, res, next, "added_in");
-  };
+    if (req.body.preferredOS === undefined && req.method === "PATCH") {
+      return next();
+    }
 
-  export const checkPreferredOs = (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) => {
-    const preferredOs = req.body.preferred_os + "";
+    const preferredOS = req.body.preferredOS + "";
 
-    let formattedOs = (preferredOs[0] || "").toUpperCase();
+    let formattedOs = (preferredOS[0] || "").toUpperCase();
     formattedOs +=
-      preferredOs.toLowerCase() === "macos"
-        ? preferredOs.substring(1, 3).toLowerCase() +
-          preferredOs.substring(3).toUpperCase()
-        : preferredOs.substring(1).toLowerCase();
+      preferredOS.toLowerCase() === "macos"
+        ? preferredOS.substring(1, 3).toLowerCase() +
+          preferredOS.substring(3).toUpperCase()
+        : preferredOS.substring(1).toLowerCase();
 
     const isAValidOs = os.includes(formattedOs);
 
     if (!isAValidOs) {
       const errorMessage: iMessage = {
-        message: `Preferred OS should have one of this values: ${os.join(
-          ", "
-        )}`,
+        message: "Invalid OS option.",
+        options: os,
       };
 
       return res.status(400).send(errorMessage);
     }
 
-    req.body.preferred_os = formattedOs;
+    req.body.preferredOS = formattedOs;
 
     next();
   };
@@ -460,7 +477,7 @@ export namespace middlewares {
     res: Response,
     next: NextFunction
   ) => {
-    const developerId = req.body.developer_id;
+    const developerId = req.body.developerId;
 
     if (developerId) {
       req.parsedId = developerId;
@@ -535,9 +552,8 @@ export namespace middlewares {
 
     if (!availablesTechnologies.includes(insertedTechnology.toLowerCase())) {
       const errorMessage: iMessage = {
-        message: `Insert one of these technologies: ${availablesTechnologies.join(
-          ", "
-        )}`,
+        message: "Technology not supported.",
+        options: availablesTechnologies,
       };
 
       return res.status(400).send(errorMessage);
@@ -555,6 +571,8 @@ export namespace middlewares {
     res: Response,
     next: NextFunction
   ) => {
+    const technologyName = req.params.name;
+
     const projectsTechnologiesIds =
       await database.getProjectsTechnologiesWithIds(
         req.parsedId,
@@ -566,11 +584,12 @@ export namespace middlewares {
     const errorMessage: iMessage = { message: "" };
 
     if (req.method === "POST" && hasTechnology) {
-      errorMessage.message = "Project already has the technology";
+      const technologyName = req.body.name;
+      errorMessage.message = `Technology ${technologyName} is already on this Project.`;
 
       return res.status(409).send(errorMessage);
     } else if (req.method === "DELETE" && !hasTechnology) {
-      errorMessage.message = "Project doesn't hava the deleted technology";
+      errorMessage.message = `Technology ${technologyName} not found on this Project.`;
 
       return res.status(400).send(errorMessage);
     } else if (req.method === "DELETE") {
