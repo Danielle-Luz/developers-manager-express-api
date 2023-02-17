@@ -1,4 +1,5 @@
 import {
+  iDeveloper,
   iDeveloperJoinDeveloperInfo,
   iProjectJoinTechnologies,
 } from "./../interfaces";
@@ -7,13 +8,22 @@ import { database } from "../database";
 import { iMessage } from "../interfaces";
 
 export namespace requests {
-  const createRegister = async (req: Request, res: Response, table: string) => {
+  const createRegister = async (
+    req: Request,
+    res: Response,
+    table: string,
+    hasSelectReturn?: boolean
+  ) => {
     const { body: newRegister } = req;
 
     try {
       const createdRegister = await database.createRegister(newRegister, table);
 
-      return res.status(201).send(createdRegister);
+      if (!hasSelectReturn) {
+        return res.status(201).send(createdRegister);
+      } else {
+        return createdRegister;
+      }
     } catch (error) {
       const errorObject = error as Error;
 
@@ -35,13 +45,26 @@ export namespace requests {
     req: Request,
     res: Response
   ) => {
+    const projectId = req.parsedId;
+    
     req.body = {
-      project_id: req.parsedId,
-      technology_id: req.technologyId,
-      added_in: req.body.added_in,
+      projectId: req.parsedId,
+      technologyId: req.technologyId,
+      addedIn: req.body.addedIn,
     };
+    
+    const createdProjectTechnology = (await createRegister(
+      req,
+      res,
+      "projectsTechnologies",
+      true
+      )) as iDeveloper;
 
-    await createRegister(req, res, "projects_technologies");
+    const technologyWithProject = 
+      await database.getProjects(undefined, undefined, true, createdProjectTechnology.id)
+    ;
+      
+    return res.status(201).send(technologyWithProject);
   };
 
   export const createDeveloperInfos = async (req: Request, res: Response) => {
@@ -108,7 +131,7 @@ export namespace requests {
   export const updateDeveloperInfo = async (req: Request, res: Response) => {
     req.parsedId = req.developerInfoId;
 
-    return await updateData(req, res, "developer_infos");
+    return await updateData(req, res, "developerInfos");
   };
 
   export const updateProject = async (req: Request, res: Response) => {
@@ -225,7 +248,7 @@ export namespace requests {
   ) => {
     try {
       await database.deleteData(
-        "projects_technologies",
+        "projectsTechnologies",
         "id",
         req.projectTechnologyId
       );

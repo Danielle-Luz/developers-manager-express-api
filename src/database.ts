@@ -79,16 +79,16 @@ export namespace database {
   ) => {
     const createdDeveloperInfo = await createRegister(
       newDeveloperInfo,
-      "developer_infos"
+      "developerInfos"
     );
     const developerInfoId = createdDeveloperInfo.id;
 
-    const developerIdObject: iId = { developer_id: developerId };
-    const developerInfoIdObject: iId = { developer_info_id: developerInfoId };
+    const developerIdObject: iId = { developerId: developerId };
+    const developerInfoIdObject: iId = { developerInfoId: developerInfoId };
 
     await updateRegister("developers", developerId, developerInfoIdObject);
     const updatedDeveloperInfo = await updateRegister(
-      "developer_infos",
+      "developerInfos",
       developerInfoId,
       developerIdObject
     );
@@ -100,14 +100,14 @@ export namespace database {
     let queryString = `
     SELECT 
     di.id AS "developerInfoID", 
-    developer_since AS "developerInfoDeveloperSince",
-    preferred_os AS "developerInfoPreferredOS",
+    "developerSince" AS "developerInfoDeveloperSince",
+    "preferredOS" AS "developerInfopreferredOS",
     d.id AS "developerID",
     "name" AS "developerName",
     email AS "developerEmail"
     FROM developers d
-    LEFT JOIN developer_infos di
-    ON d.id = di.developer_id
+    LEFT JOIN "developerInfos" di
+    ON d.id = di."developerId"
     `;
 
     if (id || id === 0) {
@@ -122,30 +122,39 @@ export namespace database {
     return queryResult.rows;
   };
 
-  export const getProjects = async (id?: number, developerId?: number) => {
+  export const getProjects = async (
+    id?: number,
+    developerId?: number,
+    hideDevId?: boolean,
+    projectTechnologyId?: number,
+  ) => {
     let queryString = `
     SELECT
     p.id as "projectID",
     p.name as "projectName",
     p.description as "projectDescription",
-    p.estimated_time as "projectEstimatedTime",
+    p."estimatedTime" as "projectEstimatedTime",
     p.repository as "projectRepository",
-    p.start_date as "projectStartDate",
-    p.end_date as "projectEndDate",
-    p.developer_id as "projectDeveloperID",
+    p."startDate" as "projectStartDate",
+    p."endDate" as "projectEndDate",
+    ${hideDevId ? "" : `p."developerId" as "projectDeveloperID",`}
     t.id as "technologyID",
     t.name as "technologyName"
     FROM projects p
-    LEFT JOIN projects_technologies pt
-    ON project_id = p.id
+    LEFT JOIN "projectsTechnologies" pt
+    ON "projectId" = p.id
     LEFT JOIN technologies t
-    ON technology_id = t.id
+    ON "technologyId" = t.id
     `;
 
     if (id || id === 0) {
       queryString += "WHERE p.id = %L";
 
       queryString = format(queryString, id);
+    } else if (projectTechnologyId || projectTechnologyId === 0) {
+      queryString += "WHERE pt.id = %L";
+
+      queryString = format(queryString, projectTechnologyId);
     }
 
     const queryResult: QueryResult<iProjectJoinTechnologies> =
@@ -161,28 +170,28 @@ export namespace database {
     d."name" AS "developerName",
     email AS "developerEmail",
     di.id AS "developerInfoID", 
-    developer_since AS "developerInfoDeveloperSince",
-    preferred_os AS "developerInfoPreferredOS",
+    "developerSince" AS "developerInfoDeveloperSince",
+    "preferredOS" AS "developerInfopreferredOS",
     p.id as "projectID",
     p.name as "projectName",
     p.description as "projectDescription",
-    p.estimated_time as "projectEstimatedTime",
+    p."estimatedTime" as "projectEstimatedTime",
     p.repository as "projectRepository",
-    p.start_date as "projectStartDate",
-    p.end_date as "projectEndDate",
-    p.developer_id as "projectDeveloperID",
+    p."startDate" as "projectStartDate",
+    p."endDate" as "projectEndDate",
+    p."developerId" as "projectDeveloperID",
     t.id as "technologyID",
     t.name as "technologyName"
     FROM projects p
     INNER JOIN developers d
-    ON p.developer_id = d.id
-    LEFT JOIN developer_infos di
-    ON d.id = di.developer_id
-    LEFT JOIN projects_technologies pt
-    ON project_id = p.id
+    ON p."developerId" = d.id
+    LEFT JOIN "developerInfos" di
+    ON d.id = di."developerId"
+    LEFT JOIN "projectsTechnologies" pt
+    ON "projectId" = p.id
     LEFT JOIN technologies t
-    ON technology_id = t.id
-    WHERE p.developer_id = %L
+    ON "technologyId" = t.id
+    WHERE p."developerId" = %L
     `;
 
     queryString = format(queryString, developerId);
@@ -218,8 +227,8 @@ export namespace database {
   ) => {
     const queryString = `
     SELECT id
-    FROM projects_technologies
-    WHERE project_id = %L AND technology_id = %L;
+    FROM "projectsTechnologies"
+    WHERE "projectId" = %L AND "technologyId" = %L;
     `;
 
     const queryResult: QueryResult<iId> = await connection.query(

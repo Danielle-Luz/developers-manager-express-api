@@ -4,76 +4,76 @@ export interface iDeveloper {
   id?: number;
   name?: string;
   email?: string;
-  developer_info_id?: number | null;
+  developerInfoId?: number | null;
   [key: string]: string | number | null;
 }
 
 export interface iDeveloperInfo {
   id?: number;
-  developer_since: Date;
-  preferred_os: "";
-  developer_id?: number;
+  developerSince?: Date;
+  preferredOS?: "";
+  developerId?: number;
   [key: string]: string | number | Date | null;
 }
 
 export interface iDeveloperJoinDeveloperInfo {
-  developer_id: number;
+  developerId: number;
   developer_name: string;
   developer_email: string;
-  developer_info_id: number | null;
-  developer_info_developer_since: string | null;
-  developer_info_preferred_os: "" | null;
+  developerInfoId: number | null;
+  developer_info_developerSince: string | null;
+  developer_info_preferredOS: "" | null;
 }
 
 export interface iProject {
-  id?: number
-	name: string;
-	description: string;
-	estimated_time: string;
-	repository: string;
-	start_date: Date;
-	end_date?: Date | null;
-	developer_id: number;
+  id?: number;
+  name: string;
+  description: string;
+  estimatedTime: string;
+  repository: string;
+  startDate: Date;
+  endDate?: Date | null;
+  developerId: number;
   [key: string]: string | number | Date | null;
 }
 
 interface Project {
-  project_id: number;
+  projectId: number;
   project_name: string;
   description: string;
-  estimated_time: string;
+  estimatedTime: string;
   repository: string;
-  start_date: Date;
-  end_date: Date | null;
-  developer_id: number;
-  technology_id: number;
+  startDate: Date;
+  endDate: Date | null;
+  developerId: number;
+  technologyId: number;
   technology_name: string;
 }
 
 export interface iProjectJoinTechnologies {
-  project_id: number;
+  projectId: number;
   project_name: string;
   project_description: string;
-  project_estimated_time: string;
+  project_estimatedTime: string;
   project_repository: string;
-  project_start_date: string;
-  project_end_date: string | null;
-  project_developer_id: number | null;
-  technology_id: number | null;
+  project_startDate: string;
+  project_endDate: string | null;
+  project_developerId?: number | null;
+  technologyId: number | null;
   technology_name: string | null;
 }
 
 export interface iTechnology {
   id?: number;
-	name: string;
-  added_in: Date;
+  name: string;
+  addedIn?: Date;
   [key: string]: number | string | Date;
 }
 
 export interface iId {
   id?: number;
-  developer_info_id?: number | undefined;
-  developer_id?: number | undefined;
+  developerInfoId?: number | undefined;
+  developerId?: number | undefined;
 }
 
 export interface iMessage {
@@ -86,4 +86,5 @@ export interface iCount {
   count: number;
 }
 
-export type tDeveloperProjects = iDeveloperJoinDeveloperInfo & iProjectJoinTechnologies;
+export type tDeveloperProjects = iDeveloperJoinDeveloperInfo &
+  iProjectJoinTechnologies;
